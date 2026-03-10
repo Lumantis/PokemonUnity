@@ -1,0 +1,24 @@
+{
+    "name": "PokemonEssentials",
+    "rootNamespace": "PokemonUnity.Interface.UnityEngine",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.Cinemachine",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "PokemonUnity.dll",
+        "PokemonEssentials.dll",
+        "Newtonsoft.Json.dll",
+        "Mono.Data.Sqlite.dll",
+        "System.Data.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

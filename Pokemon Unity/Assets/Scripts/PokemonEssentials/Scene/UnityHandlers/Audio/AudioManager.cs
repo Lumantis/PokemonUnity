@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using PokemonEssentials.Interface;
@@ -8,8 +8,14 @@ using UnityEngine;
 namespace PokemonUnity.Interface.UnityEngine
 {
 	/// <summary>
-	/// UnityEngine AudioHandler Logic
+	/// Gestionnaire audio Unity — compatible Unity 6.
 	/// </summary>
+	/// <remarks>
+	/// Corrections Unity 6 :
+	/// - new AudioSource() est interdit ; utiliser gameObject.AddComponent&lt;AudioSource&gt;()
+	/// - LateUpdate : ne pas supprimer des éléments d'une liste pendant une itération foreach
+	/// - Méthodes d'interface explicites correctement implémentées
+	/// </remarks>
 	public class AudioManager : MonoBehaviour, IAudio,
 		PokemonEssentials.Interface.IAudioBGM,
 		PokemonEssentials.Interface.IAudioBGS,
@@ -21,8 +27,7 @@ namespace PokemonUnity.Interface.UnityEngine
 		{
 			get
 			{
-				int ret = 0; //Kernel.Audio_bgm_get_position;
-				//ret = bgmSource.timeSamples; //unity using timeSamples to return position data of audio stream
+				int ret = 0;
 				ret = (int)(bgmSource.time * 1000);
 				return ret;
 			}
@@ -40,7 +45,6 @@ namespace PokemonUnity.Interface.UnityEngine
 
 		private void Awake()
 		{
-			//AudioHandler = this;
 			if (AudioHandler == null)
 			{
 				AudioHandler = this;
@@ -48,24 +52,23 @@ namespace PokemonUnity.Interface.UnityEngine
 			else if ((object)AudioHandler != this)
 			{
 				Destroy(gameObject);
+				return;
 			}
-			// Create different AudioSource components for different types of audio
+			// Unity 6 : les AudioSource doivent être créés via AddComponent
 			bgmSource = gameObject.AddComponent<AudioSource>();
 			bgsSource = gameObject.AddComponent<AudioSource>();
-			meSource = gameObject.AddComponent<AudioSource>();
+			meSource  = gameObject.AddComponent<AudioSource>();
 		}
 
 		private void LateUpdate()
 		{
-			foreach (AudioSource source in seSources)
-				if (!source.isPlaying)
-					seSources.Remove(source);
+			// Unity 6 : ne jamais supprimer d'éléments dans un foreach — utiliser RemoveAll
+			seSources.RemoveAll(source => source == null || !source.isPlaying);
 		}
 
 		void IAudio.bgm_play(string filename, float volume, float pitch) { bgm_play(filename, volume, pitch); }
 		public void bgm_play(string filename, float volume, float pitch, int position = 0)
 		{
-			//IAudioObject audio = new AudioTrack(clip).initialize(filename, volume, pitch);
 			PlayAudio(bgmSource, filename, volume, pitch, true, position);
 		}
 		public void bgm_play(IAudioObject audio, int position = 0)
@@ -123,13 +126,15 @@ namespace PokemonUnity.Interface.UnityEngine
 
 		public void se_play(string filename, float volume, float pitch)
 		{
-			AudioSource seSource = new AudioSource();
+			// Unity 6 : AudioSource créé via AddComponent, pas via new AudioSource()
+			AudioSource seSource = gameObject.AddComponent<AudioSource>();
 			seSources.Add(seSource);
 			PlayAudio(seSource, filename, volume, pitch, false);
 		}
 		public void se_play(IAudioObject audio)
 		{
-			AudioSource seSource = new AudioSource();
+			// Unity 6 : AudioSource créé via AddComponent, pas via new AudioSource()
+			AudioSource seSource = gameObject.AddComponent<AudioSource>();
 			seSources.Add(seSource);
 			PlayAudio(seSource, audio.name, audio.volume, audio.pitch, false);
 		}
@@ -138,7 +143,14 @@ namespace PokemonUnity.Interface.UnityEngine
 		{
 			foreach (var source in seSources)
 			{
-				source.Stop();
+				if (source != null)
+					source.Stop();
+			}
+			// Supprimer les composants AudioSource créés dynamiquement pour les SE
+			foreach (var source in seSources)
+			{
+				if (source != null)
+					Destroy(source);
 			}
 			seSources.Clear();
 		}
@@ -165,7 +177,6 @@ namespace PokemonUnity.Interface.UnityEngine
 			source.pitch = audio.pitch;
 			source.loop = loop;
 			source.timeSamples = position;
-			//isLooping = loop;
 			source.Play();
 			StopCoroutine("CheckMusicLoop");
 			StartCoroutine(CheckMusicLoop());
@@ -180,17 +191,17 @@ namespace PokemonUnity.Interface.UnityEngine
 				source.volume -= startVolume * Time.deltaTime / fadeTime;
 				yield return null;
 			}
-			//LeanTween.easeOutElastic(startVolume, 0, source.volume, period: fadeTime);
 
 			source.Stop();
 			source.volume = startVolume;
 		}
 
 		/// <summary>
-		/// <returns></resummaryturns>
+		/// Vérifie la boucle de la musique de fond.
+		/// </summary>
 		/// <remarks>
-		/// All music tracks are looped by default
-		/// Use volume or <see cref="bgm_stop"/> to turn off the music
+		/// Toutes les pistes musicales sont bouclées par défaut.
+		/// Utilisez le volume ou <see cref="bgm_stop"/> pour arrêter la musique.
 		/// </remarks>
 		private IEnumerator CheckMusicLoop()
 		{
@@ -198,7 +209,6 @@ namespace PokemonUnity.Interface.UnityEngine
 			{
 				if(loopEndSamples == 0)
 				{
-					//loopStartSamples = 0;
 					loopEndSamples = bgmSource.clip.samples;
 				}
 				if(loopStartSamples >= loopEndSamples && loopEndSamples != 0)
@@ -207,17 +217,13 @@ namespace PokemonUnity.Interface.UnityEngine
 				}
 				if(loopEndSamples > 0)
 				{
-					//if (!isLooping && bgmSource.timeSamples >= loopEndSamples)
 					if (!bgmSource.loop && bgmSource.timeSamples >= loopEndSamples)
 					{
 						bgmSource.timeSamples = loopStartSamples;
-						//isLooping = true; // Begin looping
-						bgmSource.loop = true; // Begin looping
+						bgmSource.loop = true;
 					}
-					//else if (isLooping && bgmSource.timeSamples < loopStartSamples)
 					else if (bgmSource.loop && bgmSource.timeSamples < loopStartSamples)
 					{
-						// If the audio source somehow goes before the loop start, reset to loop start
 						bgmSource.timeSamples = loopStartSamples;
 					}
 				}

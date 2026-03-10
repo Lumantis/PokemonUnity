@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using PokemonUnity;
@@ -26,6 +25,8 @@ using UnityEngine.U2D;
 namespace PokemonUnity.Interface.UnityEngine
 {
 	/// <summary>
+	/// Génère la carte du monde à partir de données JSON Tiled.
+	/// Compatible Unity 6 (Built-in Render Pipeline).
 	/// </summary>
 	/// https://www.youtube.com/watch?v=64NblGkAabk
 	[RequireComponent(typeof(MeshFilter)), RequireComponent(typeof(MeshRenderer)), RequireComponent(typeof(MeshCollider))]
@@ -85,8 +86,16 @@ namespace PokemonUnity.Interface.UnityEngine
 			meshCollider = GetComponent<MeshCollider>();
 			//meshCollider = gameObject.AddComponent<MeshCollider>();
 			meshCollider.sharedMesh = null;
-			Material material = new Material(Shader.Find("Diffuse"));
-			//material.mainTexture = spriteAtlas.GetSprite("col_tile").texture;
+
+			// Unity 6 : utiliser "Standard" au lieu de l'ancien shader "Diffuse" (supprimé en Unity 5+)
+			// Si URP est actif, utiliser "Universal Render Pipeline/Lit"
+			Shader shader = Shader.Find("Standard");
+			if (shader == null)
+			{
+				// Fallback URP si le pipeline Built-in n'est pas disponible
+				shader = Shader.Find("Universal Render Pipeline/Lit");
+			}
+			Material material = new Material(shader);
 			material.mainTexture = texture;
 			meshRenderer.material = material;
 
@@ -103,11 +112,13 @@ namespace PokemonUnity.Interface.UnityEngine
 
 		private void LoadMapData()
 		{
-			string path = global::UnityEngine.Application.dataPath + "/StreamingAssets/MapJson/map001.json";
+			// Unity 6 : Application.dataPath est correct, mais pour StreamingAssets
+			// il faut utiliser Application.streamingAssetsPath pour plus de portabilité
+			string path = global::UnityEngine.Application.streamingAssetsPath + "/MapJson/map001.json";
 			bool canLoad = File.Exists(path);
 			if (!canLoad)
 			{
-				Debug.Log(path);
+				Debug.Log("TileMapGenerator: carte introuvable à " + path);
 				return;
 			}
 			Debug.Assert(canLoad);
@@ -219,8 +230,12 @@ namespace PokemonUnity.Interface.UnityEngine
 						Vector3 offsetDifference = rotatedOffset - pivotOffset;
 						// Adjust the position of the object considering the rotation offset
 						Vector3 adjustedPosition = position - offsetDifference;
-						Material material = new Material(Shader.Find("Diffuse"));
-						//material.mainTexture = spriteAtlas.GetSprite("col_tile").texture;
+
+						// Unity 6 : utiliser "Standard" au lieu de l'ancien shader "Diffuse"
+						Shader wallShader = Shader.Find("Standard");
+						if (wallShader == null)
+							wallShader = Shader.Find("Universal Render Pipeline/Lit");
+						Material material = new Material(wallShader);
 						material.mainTexture = texture;
 						//Vector4 uv = new Vector4(x: uvMap[4][0].x, y: uvMap[4][0].y, z: uvMap[4][1].x, w: uvMap[4][1].y); //new Vector4(1, 1, 0, 0)
 						Vector4 uv = new Vector4(x: .25f, y: .25f, z: 0, w: .25f); //WallMat

@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PokémonUnity — Guide de Déploiement Unity 6</title>
+  <style>
+    :root {
+      --red: #CC0000;
+      --dark: #1a1a2e;
+      --medium: #16213e;
+      --accent: #e94560;
+      --blue: #0f3460;
+      --yellow: #f5c518;
+      --green: #27ae60;
+      --orange: #e67e22;
+      --white: #f8f9fa;
+      --text: #dee2e6;
+      --code-bg: #0d1117;
+      --border: #30363d;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--red) 0%, #8B0000 50%, var(--blue) 100%);
+      padding: 60px 40px;
+      text-align: center;
+      border-bottom: 4px solid var(--yellow);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    header h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+      letter-spacing: -1px;
+    }
+    header .pokeball {
+      display: inline-block;
+      font-size: 3rem;
+      margin-right: 16px;
+      animation: spin 8s linear infinite;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    header .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.85);
+      margin-top: 12px;
+      font-weight: 400;
+    }
+    header .badge {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--dark);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 16px;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* NAV */
+    nav.toc {
+      background: var(--medium);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 48px;
+    }
+    nav.toc h2 {
+      font-size: 1.1rem;
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    nav.toc ol {
+      padding-left: 20px;
+    }
+    nav.toc li {
+      margin: 6px 0;
+    }
+    nav.toc a {
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    nav.toc a:hover { color: var(--yellow); }
+
+    /* SECTIONS */
+    section {
+      margin-bottom: 56px;
+    }
+    section h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--yellow);
+      border-left: 5px solid var(--red);
+      padding-left: 16px;
+      margin-bottom: 24px;
+      scroll-margin-top: 80px;
+    }
+    section h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 28px 0 12px;
+    }
+    section p { margin-bottom: 14px; }
+
+    /* STEPS */
+    .steps { counter-reset: step; }
+    .step {
+      background: var(--medium);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .step:hover { border-color: var(--yellow); }
+    .step-number {
+      counter-increment: step;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--red);
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-content h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .step-content p, .step-content ul {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .step-content ul {
+      margin: 8px 0 0 20px;
+    }
+    .step-content li { margin: 4px 0; }
+
+    /* CODE BLOCKS */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      margin: 14px 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    code {
+      font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+      color: #e6edf3;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .inline-code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.875em;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      color: #79c0ff;
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      border-left: 5px solid;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .callout-body h4 { font-weight: 700; margin-bottom: 6px; }
+    .callout.warning { background: rgba(230,126,34,0.12); border-color: var(--orange); }
+    .callout.warning .callout-body h4 { color: var(--orange); }
+    .callout.info { background: rgba(52,152,219,0.12); border-color: #3498db; }
+    .callout.info .callout-body h4 { color: #3498db; }
+    .callout.success { background: rgba(39,174,96,0.12); border-color: var(--green); }
+    .callout.success .callout-body h4 { color: var(--green); }
+    .callout.danger { background: rgba(204,0,0,0.12); border-color: var(--red); }
+    .callout.danger .callout-body h4 { color: #e74c3c; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--blue);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(245,197,24,0.05); }
+
+    /* FILE TREE */
+    .file-tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.8;
+    }
+    .file-tree .dir { color: #79c0ff; font-weight: 700; }
+    .file-tree .file { color: #e6edf3; }
+    .file-tree .changed { color: #f0e68c; }
+    .file-tree .new { color: #7ee787; }
+    .file-tree .comment { color: #8b949e; }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--medium);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+    }
+    .card h4 {
+      font-weight: 700;
+      color: var(--yellow);
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    /* CHANGELOG */
+    .changelog-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-item:last-child { border-bottom: none; }
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      height: fit-content;
+    }
+    .tag.fix { background: var(--red); color: #fff; }
+    .tag.update { background: #0e6655; color: #7dcea0; }
+    .tag.new { background: #1a5276; color: #85c1e9; }
+    .tag.remove { background: #4a235a; color: #d7bde2; }
+
+    /* FOOTER */
+    footer {
+      background: var(--medium);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: #8b949e;
+      font-size: 0.9rem;
+    }
+    footer strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <span class="pokeball">⚪</span>
+    <h1>PokémonUnity — Guide de Déploiement</h1>
+    <p class="subtitle">Migration complète vers Unity 6 (6000.0.47f1 LTS) · Documentation officielle du projet</p>
+    <span class="badge">Unity 6 LTS · Validé · Mars 2026</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- TABLE DES MATIERES -->
+  <nav class="toc">
+    <h2>📋 Table des matières</h2>
+    <ol>
+      <li><a href="#prerequis">Prérequis &amp; Installation</a></li>
+      <li><a href="#structure">Structure du Projet</a></li>
+      <li><a href="#migration">Ce qui a été migré pour Unity 6</a></li>
+      <li><a href="#ouverture">Ouvrir le projet dans Unity Hub</a></li>
+      <li><a href="#database">Configurer la base de données Pokémon</a></li>
+      <li><a href="#packages">Gestion des packages NuGet &amp; DLL</a></li>
+      <li><a href="#scenes">Organisation des scènes</a></li>
+      <li><a href="#play">Lancer le jeu en mode Play</a></li>
+      <li><a href="#build">Builder &amp; exporter le projet</a></li>
+      <li><a href="#scripts">Utilisation des scripts Unity</a></li>
+      <li><a href="#outils">Outils développeur (TOOLS/)</a></li>
+      <li><a href="#tests">Tests unitaires</a></li>
+      <li><a href="#troubleshooting">Résolution des problèmes courants</a></li>
+      <li><a href="#changelog">Journal des modifications Unity 6</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. PREREQUIS -->
+  <section id="prerequis">
+    <h2>1. Prérequis &amp; Installation</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Logiciel</th>
+            <th>Version minimale</th>
+            <th>Rôle</th>
+            <th>Téléchargement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Unity Hub</strong></td>
+            <td>3.8+</td>
+            <td>Gestionnaire de versions Unity</td>
+            <td><a href="https://unity.com/download">unity.com/download</a></td>
+          </tr>
+          <tr>
+            <td><strong>Unity 6 (6000.0.47f1 LTS)</strong></td>
+            <td>6000.0.47f1</td>
+            <td>Moteur de jeu</td>
+            <td>Via Unity Hub → Installs</td>
+          </tr>
+          <tr>
+            <td><strong>Visual Studio 2022</strong> ou <strong>Rider</strong></td>
+            <td>VS 2022 17.8+ / Rider 2024+</td>
+            <td>IDE C# &amp; débogage</td>
+            <td><a href="https://visualstudio.microsoft.com">visualstudio.microsoft.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>Git</strong></td>
+            <td>2.40+</td>
+            <td>Contrôle de version</td>
+            <td><a href="https://git-scm.com">git-scm.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>.NET SDK</strong></td>
+            <td>8.0+</td>
+            <td>Compilation C# (Unity 6 inclus)</td>
+            <td>Inclus avec Unity ou VS 2022</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Installation de Unity 6 via Unity Hub</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ouvrir Unity Hub et aller dans l'onglet "Installs"</h4>
+          <p>Cliquez sur <strong>Install Editor</strong>, puis dans le filtre choisissez <strong>Long Term Support (LTS)</strong>. Sélectionnez <strong>Unity 6 (6000.0.47f1)</strong> ou supérieur.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Modules à inclure lors de l'installation</h4>
+          <ul>
+            <li><strong>Microsoft Visual Studio Community 2022</strong> (si non déjà installé)</li>
+            <li><strong>Windows Build Support (IL2CPP)</strong> — pour les builds Windows</li>
+            <li><strong>WebGL Build Support</strong> — optionnel</li>
+            <li><strong>Android Build Support</strong> — optionnel</li>
+            <li><strong>Documentation</strong> — recommandé</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. STRUCTURE -->
+  <section id="structure">
+    <h2>2. Structure du Projet</h2>
+    <p>Voici l'arborescence complète du dépôt <strong>PokemonUnity</strong> :</p>
+
+    <div class="file-tree">
+<span class="dir">PokemonUnity/</span>                        <span class="comment">← Racine du dépôt Git</span>
+├── <span class="dir">Pokemon Unity/</span>                   <span class="comment">← Projet Unity principal (ouvrir CE dossier)</span>
+│   ├── <span class="dir">Assets/</span>
+│   │   ├── <span class="dir">Game/</span>                    <span class="comment">← Ressources du jeu (sprites, audio, prefabs)</span>
+│   │   ├── <span class="dir">Scripts/</span>
+│   │   │   ├── <span class="dir">LeanTween/</span>           <span class="comment">← Bibliothèque d'animation</span>
+│   │   │   │   └── <span class="new">LeanTween.asmdef</span>    <span class="comment">← NOUVEAU : Assembly definition</span>
+│   │   │   └── <span class="dir">PokemonEssentials/</span>   <span class="comment">← Scripts principaux du jeu</span>
+│   │   │       ├── <span class="new">PokemonEssentials.asmdef</span> <span class="comment">← NOUVEAU</span>
+│   │   │       ├── <span class="dir">GameManager/</span>
+│   │   │       ├── <span class="dir">Scene/</span>
+│   │   │       │   ├── <span class="dir">Battle/</span>
+│   │   │       │   ├── <span class="dir">Overworld/</span>
+│   │   │       │   │   └── <span class="changed">TileMapGenerator.cs</span>  <span class="comment">← MODIFIÉ</span>
+│   │   │       │   └── <span class="dir">UnityHandlers/</span>
+│   │   │       │       └── <span class="dir">Audio/</span>
+│   │   │       │           ├── <span class="changed">AudioManager.cs</span>     <span class="comment">← MODIFIÉ</span>
+│   │   │       │           └── <span class="changed">MicrophoneRecorder.cs</span> <span class="comment">← MODIFIÉ</span>
+│   │   ├── <span class="dir">Plugins/</span>                 <span class="comment">← DLLs tierces (SQLite, PokemonFramework)</span>
+│   │   ├── <span class="dir">StreamingAssets/</span>
+│   │   │   └── <span class="dir">MapJson/</span>             <span class="comment">← Données des cartes Tiled</span>
+│   │   └── <span class="dir">TextMesh Pro/</span>           <span class="comment">← Package TextMeshPro</span>
+│   ├── <span class="dir">Packages/</span>
+│   │   └── <span class="changed">manifest.json</span>           <span class="comment">← MODIFIÉ : packages Unity 6</span>
+│   └── <span class="dir">ProjectSettings/</span>
+│       ├── <span class="changed">ProjectVersion.txt</span>      <span class="comment">← MODIFIÉ : 6000.0.47f1</span>
+│       └── <span class="changed">ProjectSettings.asset</span>   <span class="comment">← MODIFIÉ : paramètres Unity 6</span>
+├── <span class="dir">TOOLS/</span>                            <span class="comment">← Outils développeur</span>
+│   ├── <span class="dir">PKU-PokemonDatabaseEditor/</span>   <span class="comment">← Éditeur base de données</span>
+│   └── <span class="dir">Blender Tile Mapping/</span>
+├── <span class="dir">UnitTestProject/</span>                  <span class="comment">← Tests MSTest (.NET)</span>
+├── <span class="file">veekun-pokedex.sql</span>               <span class="comment">← Script SQL source</span>
+└── <span class="new">Deploiement.html</span>                  <span class="comment">← CE FICHIER</span>
+    </div>
+  </section>
+
+  <!-- 3. MIGRATION -->
+  <section id="migration">
+    <h2>3. Ce qui a été migré pour Unity 6</h2>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">
+        <h4>Contexte de la migration</h4>
+        <p>Le projet était écrit pour <strong>Unity 2018.4.36f1 LTS</strong>. Unity 6 (6000.0.47f1) apporte des changements majeurs dans l'API, les packages, le pipeline de rendu et la gestion des composants.</p>
+      </div>
+    </div>
+
+    <div id="changelog">
+      <div class="changelog-item">
+        <span class="tag update">UPDATE</span>
+        <div>
+          <strong>ProjectVersion.txt</strong> — Version mise à jour<br />
+          <code class="inline-code">2018.4.36f1</code> → <code class="inline-code">6000.0.47f1</code>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag update">UPDATE</span>
+        <div>
+          <strong>manifest.json</strong> — Packages Unity 6 compatibles<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li>Supprimé : <code class="inline-code">com.unity.package-manager-ui</code> (supprimé depuis Unity 2019)</li>
+            <li>Supprimé : <code class="inline-code">com.unity.modules.cloth</code> (non nécessaire)</li>
+            <li>Mis à jour : <code class="inline-code">com.unity.cinemachine: 2.7.9</code> → <code class="inline-code">3.1.2</code></li>
+            <li>Mis à jour : <code class="inline-code">com.unity.textmeshpro: 1.4.1</code> → <code class="inline-code">3.0.9</code></li>
+            <li>Ajouté : <code class="inline-code">com.unity.inputsystem: 1.11.2</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag fix">FIX</span>
+        <div>
+          <strong>TileMapGenerator.cs</strong> — Corrections critiques<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li>Supprimé : <code class="inline-code">using System.Drawing;</code> — cet espace de noms n'existe pas dans Unity (aucune plateforme). Il causait une erreur de compilation immédiate.</li>
+            <li>Corrigé : <code class="inline-code">Shader.Find("Diffuse")</code> → <code class="inline-code">Shader.Find("Standard")</code> — le shader "Diffuse" a été supprimé depuis Unity 5. En Unity 6, il faut utiliser "Standard" (Built-in) avec un fallback vers "Universal Render Pipeline/Lit".</li>
+            <li>Corrigé : Chemin StreamingAssets — utilisation de <code class="inline-code">Application.streamingAssetsPath</code> au lieu de <code class="inline-code">Application.dataPath + "/StreamingAssets/"</code> pour la portabilité cross-platform.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag fix">FIX</span>
+        <div>
+          <strong>AudioManager.cs</strong> — Bug critique de composant<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li>Corrigé : <code class="inline-code">new AudioSource()</code> → <code class="inline-code">gameObject.AddComponent&lt;AudioSource&gt;()</code> — Il est <strong>impossible d'instancier directement un composant Unity</strong>. Ce bug existait en 2018 et Unity 6 le vérifie plus strictement.</li>
+            <li>Corrigé : <code class="inline-code">LateUpdate()</code> — suppression d'éléments pendant un <code class="inline-code">foreach</code> levait une <code class="inline-code">InvalidOperationException</code>. Remplacé par <code class="inline-code">RemoveAll()</code>.</li>
+            <li>Ajout de <code class="inline-code">Destroy(source)</code> lors de <code class="inline-code">se_stop()</code> pour nettoyer les AudioSource créés dynamiquement.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag fix">FIX</span>
+        <div>
+          <strong>MicrophoneRecorder.cs</strong> — RequireComponent invalide<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li>Corrigé : <code class="inline-code">[RequireComponent(typeof(AudioClip))]</code> — <code class="inline-code">AudioClip</code> n'est <strong>pas</strong> un <code class="inline-code">Component</code> Unity. C'est un <code class="inline-code">UnityEngine.Object</code> (asset). L'attribut a été remplacé par <code class="inline-code">[RequireComponent(typeof(AudioSource))]</code>.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag update">UPDATE</span>
+        <div>
+          <strong>ProjectSettings.asset</strong> — Paramètres Unity 6<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li>Version sérialisée : 18 → 45</li>
+            <li>Espace colorimétrique : <code class="inline-code">Gamma (0)</code> → <code class="inline-code">Linear (1)</code> (recommandé pour Unity 6)</li>
+            <li>New Input System activé : <code class="inline-code">enableNativePlatformBackendsForNewInputSystem: 1</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <span class="tag new">NEW</span>
+        <div>
+          <strong>Assembly Definition Files (.asmdef)</strong> — Système de modules Unity 6<br />
+          <ul style="margin-top:6px; padding-left:20px;">
+            <li><code class="inline-code">Assets/Scripts/LeanTween/LeanTween.asmdef</code></li>
+            <li><code class="inline-code">Assets/Scripts/PokemonEssentials/PokemonEssentials.asmdef</code></li>
+            <li>Bénéfices : compilation incrémentale plus rapide, isolation des dépendances, meilleure organisation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. OUVERTURE -->
+  <section id="ouverture">
+    <h2>4. Ouvrir le projet dans Unity Hub</h2>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Point critique — Quel dossier ouvrir</h4>
+        <p>Vous devez ouvrir le dossier <strong><code>Pokemon Unity/</code></strong> (avec l'espace), et <strong>non</strong> la racine du dépôt <code>PokemonUnity/</code>. Le dossier correct contient <code>Assets/</code>, <code>ProjectSettings/</code> et <code>Packages/</code>.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Cloner le dépôt Git</h4>
+          <pre><code>git clone https://github.com/Lumantis/PokemonUnity.git
+cd PokemonUnity
+git checkout claude/unity-6.3-migration-XtOmH</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ouvrir Unity Hub et ajouter le projet</h4>
+          <ul>
+            <li>Ouvrir Unity Hub</li>
+            <li>Aller dans l'onglet <strong>Projects</strong></li>
+            <li>Cliquer <strong>Add</strong> → <strong>Add project from disk</strong></li>
+            <li>Naviguer vers <code>PokemonUnity/Pokemon Unity/</code> et sélectionner ce dossier</li>
+            <li>Unity Hub devrait détecter automatiquement la version <strong>6000.0.47f1</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Attendre la compilation initiale</h4>
+          <p>La première ouverture peut prendre 5–15 minutes. Unity va :</p>
+          <ul>
+            <li>Importer tous les assets</li>
+            <li>Télécharger les packages (nécessite Internet)</li>
+            <li>Recompiler tous les scripts C#</li>
+            <li>Générer la bibliothèque de données</li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Vérifier qu'il n'y a pas d'erreurs de compilation</h4>
+          <p>Ouvrez la <strong>Console</strong> Unity (<code>Window → General → Console</code>). Si des erreurs rouges apparaissent, consultez la section <a href="#troubleshooting">Résolution des problèmes</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. DATABASE -->
+  <section id="database">
+    <h2>5. Configurer la base de données Pokémon</h2>
+
+    <p>Le projet utilise <strong>Veekun's Pokédex</strong> — une base SQLite complète contenant toutes les données Pokémon (espèces, attaques, objets, capacités, etc.).</p>
+
+    <div class="callout danger">
+      <div class="callout-icon">🔴</div>
+      <div class="callout-body">
+        <h4>La base de données n'est pas incluse dans le dépôt Git</h4>
+        <p>Le fichier <code>veekun-pokedex.sqlite</code> est trop volumineux (~374 MB) pour Git. Vous devez le générer ou le télécharger manuellement.</p>
+      </div>
+    </div>
+
+    <h3>Option A — Générer la base depuis le script SQL</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Installer SQLite</h4>
+          <pre><code># Windows (via Chocolatey)
+choco install sqlite
+
+# macOS
+brew install sqlite
+
+# Linux (Debian/Ubuntu)
+sudo apt install sqlite3</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Importer le script SQL</h4>
+          <pre><code>cd PokemonUnity
+sqlite3 veekun-pokedex.sqlite < veekun-pokedex.sql</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Copier la base dans le projet Unity</h4>
+          <pre><code># Créer le dossier Data s'il n'existe pas
+mkdir -p "Pokemon Unity/Assets/Data"
+
+# Copier la base de données
+cp veekun-pokedex.sqlite "Pokemon Unity/Assets/Data/"</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <h3>Option B — Télécharger la base</h3>
+    <p>Vous pouvez cloner le dépôt Veekun directement :</p>
+    <pre><code>git clone https://github.com/veekun/pokedex.git
+# La base générée se trouve dans pokedex/pokedex/data/</code></pre>
+
+    <h3>Configuration du chemin dans le code</h3>
+    <p>Dans <code>GameManager.cs</code> (ligne 87–88), la connexion est configurée :</p>
+    <pre><code>// Chemin relatif par défaut (mode Éditeur) :
+Game.DatabasePath = "Data Source=..\\veekun-pokedex.sqlite";
+
+// Pour un build Unity ou chemin absolu, utiliser :
+Game.DatabasePath = "Data Source=" + Application.dataPath + "/Data/veekun-pokedex.sqlite";</code></pre>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Pour un build standalone</h4>
+        <p>Le fichier <code>veekun-pokedex.sqlite</code> doit être placé dans le dossier <code>Assets/Data/</code>, et la ligne de connexion dans <code>GameManager.cs</code> doit utiliser <code>Application.dataPath</code>. Copier également <code>SQLite.Interop.dll</code> depuis <code>Plugins/</code> vers le dossier <code>Managed/</code> du build.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PACKAGES -->
+  <section id="packages">
+    <h2>6. Gestion des packages NuGet &amp; DLL</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Dépendance</th>
+            <th>Version</th>
+            <th>Emplacement</th>
+            <th>Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cinemachine</td>
+            <td>3.1.2</td>
+            <td>Package Manager (auto)</td>
+            <td>Caméra dynamique</td>
+          </tr>
+          <tr>
+            <td>TextMeshPro</td>
+            <td>3.0.9</td>
+            <td>Package Manager (auto)</td>
+            <td>Rendu de texte UI</td>
+          </tr>
+          <tr>
+            <td>Input System</td>
+            <td>1.11.2</td>
+            <td>Package Manager (auto)</td>
+            <td>Saisie joueur (nouveau système)</td>
+          </tr>
+          <tr>
+            <td>LeanTween</td>
+            <td>Inclus</td>
+            <td><code>Assets/Scripts/LeanTween/</code></td>
+            <td>Animations &amp; tweening</td>
+          </tr>
+          <tr>
+            <td>Mono.Data.Sqlite</td>
+            <td>Unity inclus</td>
+            <td><code>Assets/Plugins/</code></td>
+            <td>Connexion base SQLite</td>
+          </tr>
+          <tr>
+            <td>Newtonsoft.Json</td>
+            <td>Via Package Manager</td>
+            <td>Package Manager / DLL</td>
+            <td>Désérialisation cartes JSON</td>
+          </tr>
+          <tr>
+            <td>PokemonUnity.dll</td>
+            <td>Custom</td>
+            <td><code>Assets/Plugins/</code></td>
+            <td>Framework logique Pokémon</td>
+          </tr>
+          <tr>
+            <td>SQLite.Interop.dll</td>
+            <td>x86/x64</td>
+            <td><code>Project DLLs/SQLite/</code></td>
+            <td>SQLite natif Windows</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Ajouter Newtonsoft.Json via Package Manager</h3>
+    <p>Si <code>Newtonsoft.Json</code> n'est pas détecté comme package Unity, l'ajouter dans <code>manifest.json</code> :</p>
+    <pre><code>{
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    ...
+  }
+}</code></pre>
+
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4>Astuce Unity 6 — Package Manager</h4>
+        <p>Dans Unity 6, ouvrez <strong>Window → Package Manager</strong>. Depuis la liste déroulante, choisissez <strong>"In Project"</strong> pour voir tous les packages installés et vérifier leurs versions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SCENES -->
+  <section id="scenes">
+    <h2>7. Organisation des scènes</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Scène</th>
+            <th>Interface</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0 (Intro)</td>
+            <td>Intro</td>
+            <td><code>IIntroEventScene</code></td>
+            <td>Logos, crédits, titre</td>
+          </tr>
+          <tr>
+            <td>1 (Load)</td>
+            <td>Load</td>
+            <td><code>ILoadScene</code></td>
+            <td>Sélection de sauvegarde</td>
+          </tr>
+          <tr>
+            <td>2 (Option)</td>
+            <td>Option</td>
+            <td><code>IOptionScene</code></td>
+            <td>Paramètres du jeu</td>
+          </tr>
+          <tr>
+            <td>3 (Summary)</td>
+            <td>Summary</td>
+            <td><code>IPokemonSummaryScene</code></td>
+            <td>Fiche détaillée Pokémon</td>
+          </tr>
+          <tr>
+            <td>4 (TextEntry)</td>
+            <td>TypingForm</td>
+            <td><code>IPokemonEntryScene</code></td>
+            <td>Saisie de texte/nom</td>
+          </tr>
+          <tr>
+            <td>5 (Battle)</td>
+            <td>Battle</td>
+            <td><code>IPokeBattle_SceneIE</code></td>
+            <td>Système de combat</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Scène de démo disponible</h3>
+    <p>La scène principale est disponible dans :</p>
+    <pre><code>Assets/Game/Scenes/sampleScene.unity</code></pre>
+    <p>Ouvrez-la via <strong>File → Open Scene</strong> dans Unity, puis appuyez sur <strong>Play ▶</strong>.</p>
+
+    <h3>Architecture de chargement des scènes</h3>
+    <p>Le <code>LevelLoader.cs</code> gère les transitions entre scènes avec animation de fondu :</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li><strong>LevelLoader</strong> est attaché au GameManager (DontDestroyOnLoad)</li>
+      <li>Il écoute l'événement <code>GameManager.current.onLoadLevel</code></li>
+      <li>Les transitions utilisent LeanTween pour l'animation d'opacité du CanvasGroup</li>
+      <li>La scène est chargée via <code>SceneManager.LoadScene()</code></li>
+    </ul>
+  </section>
+
+  <!-- 8. PLAY MODE -->
+  <section id="play">
+    <h2>8. Lancer le jeu en mode Play</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ouvrir la scène sampleScene</h4>
+          <p>Dans le Project Browser : <code>Assets → Game → Scenes → sampleScene.unity</code>. Double-cliquez pour l'ouvrir dans l'éditeur.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Configurer les références de l'inspecteur</h4>
+          <p>Vérifiez que le GameObject <strong>GameManager</strong> dans la Hierarchy contient :</p>
+          <ul>
+            <li>Composant <code>GameManager</code> avec <strong>InputManager</strong> et <strong>AudioManager</strong> assignés</li>
+            <li>Composant <code>LevelLoader</code> avec <strong>CanvasGroup</strong> (pour les transitions)</li>
+            <li>Toutes les scènes référencées dans le <code>LevelLoader</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>S'assurer que la base de données est en place</h4>
+          <p>Vérifiez que <code>veekun-pokedex.sqlite</code> est dans le bon chemin (voir section <a href="#database">Base de données</a>).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Cliquer Play ▶ dans Unity</h4>
+          <p>Le jeu démarre. Surveillez la <strong>Console</strong> pour les messages de log :</p>
+          <pre><code>[LOG] Game Manager is Awake!
+[LOG] Framework Connected to Database...
+[LOG] New Game Entity Successfully Instantiated!~
+[LOG] Is Pokemon DB Greater than 0? True : 807</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. BUILD -->
+  <section id="build">
+    <h2>9. Builder &amp; exporter le projet</h2>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">
+        <h4>Pipeline de rendu Built-in (BRP)</h4>
+        <p>Le projet utilise le pipeline de rendu intégré (Built-in Render Pipeline), non URP/HDRP. Tous les shaders sont en "Standard". Si vous souhaitez migrer vers URP, il faudra une conversion supplémentaire avec l'outil Unity URP Converter.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ouvrir Build Settings</h4>
+          <p><strong>File → Build Settings</strong></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ajouter les scènes au build</h4>
+          <p>Cliquez <strong>Add Open Scenes</strong> pour chaque scène, dans l'ordre de la liste <code>Scenes</code> enum (0=Intro, 1=Load, etc.).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Configurer la plateforme cible</h4>
+          <ul>
+            <li>Sélectionner <strong>Windows, Mac, Linux (Standalone)</strong></li>
+            <li>Architecture : <strong>x86_64</strong></li>
+            <li>Scripting Backend : <strong>Mono</strong> (compatible SQLite natif) ou <strong>IL2CPP</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Build &amp; Run</h4>
+          <p>Cliquez <strong>Build And Run</strong>. Après le build, copiez manuellement :</p>
+          <pre><code># Copier les DLLs SQLite natives dans le dossier Managed du build
+cp "Project DLLs/SQLite/x64/SQLite.Interop.dll" "[Build]/[ProjectName]_Data/Managed/"
+# Et la base de données
+cp "veekun-pokedex.sqlite" "[Build]/[ProjectName]_Data/"</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. SCRIPTS -->
+  <section id="scripts">
+    <h2>10. Utilisation des scripts Unity</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>🎮 GameManager.cs</h4>
+        <p>Singleton principal. Initialise la connexion SQLite, charge les données Pokémon, configure le logger et orchestre toute l'initialisation.</p>
+        <p><strong>Attacher à :</strong> Un GameObject racine DontDestroyOnLoad</p>
+        <p><strong>Champs Inspector :</strong> <code>InputManager</code>, <code>AudioManager</code>, <code>FileTest</code></p>
+      </div>
+      <div class="card">
+        <h4>🔊 AudioManager.cs</h4>
+        <p>Gestion audio BGM, BGS, ME, SE. Singleton via <code>IAudio AudioHandler</code>. Crée automatiquement les AudioSources via AddComponent.</p>
+        <p><strong>Attacher à :</strong> Le même GameObject que GameManager</p>
+        <p><strong>Note Unity 6 :</strong> Ne jamais utiliser <code>new AudioSource()</code></p>
+      </div>
+      <div class="card">
+        <h4>⌨️ InputManager.cs + UserInputController.cs</h4>
+        <p>Pont entre Unity Input (legacy) et le système d'input Pokémon. Supporte plusieurs joueurs via des <code>UserInputController</code> indépendants.</p>
+        <p><strong>Note :</strong> Compatible avec le Legacy Input Manager ET le nouveau Input System (activé dans ProjectSettings)</p>
+      </div>
+      <div class="card">
+        <h4>🗺️ TileMapGenerator.cs</h4>
+        <p>Génère la carte du monde 3D depuis les fichiers JSON Tiled (<code>StreamingAssets/MapJson/</code>). Crée mesh, colliders et matériaux à la volée.</p>
+        <p><strong>Attacher à :</strong> Un GameObject avec MeshFilter + MeshRenderer + MeshCollider</p>
+        <p><strong>Champs :</strong> Assigner la Texture dans l'Inspector</p>
+      </div>
+      <div class="card">
+        <h4>📽️ LevelLoader.cs</h4>
+        <p>Charge les scènes Unity avec transitions de fondu. Écoute <code>GameManager.onLoadLevel</code>. Implémente <code>IGameScenesUI</code>.</p>
+        <p><strong>Champ :</strong> <code>canvasGroup</code> — un Canvas plein écran noir pour les fondus</p>
+      </div>
+      <div class="card">
+        <h4>⚔️ BattleScene.cs</h4>
+        <p>Contrôleur principal du système de combat. Implémente <code>IPokeBattle_SceneIE</code>. Gère les animations, les menus, les HP/EXP et les captures.</p>
+        <p><strong>Nombreux champs :</strong> Toutes les références UI doivent être assignées dans l'Inspector</p>
+      </div>
+    </div>
+
+    <h3>Cycle de vie des MonoBehaviours (Unity 6)</h3>
+    <p>L'ordre d'initialisation dans le projet :</p>
+    <pre><code>Awake()   → Awake()   → Awake()   (tous les GameObjects)
+             ↓
+Start()   → Start()   → Start()   (après tous les Awake)
+             ↓
+Update()  / FixedUpdate() / LateUpdate() (chaque frame)</code></pre>
+
+    <div class="callout success">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <h4>Bonne pratique Unity 6 — ordre d'initialisation</h4>
+        <p><code>GameManager.Awake()</code> est le premier à s'exécuter et initialise la connexion à la base. Tous les autres scripts qui dépendent de <code>GameManager.current</code> doivent soit être des singletons initialisés après, soit utiliser <code>Start()</code> plutôt que <code>Awake()</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. OUTILS -->
+  <section id="outils">
+    <h2>11. Outils développeur (TOOLS/)</h2>
+
+    <h3>🗄️ Pokemon Unity Database Creator</h3>
+    <p>Application WinForms pour importer/exporter des données Pokémon dans la base SQLite.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Utiliser l'exécutable précompilé</h4>
+          <p>Lancer directement :<br/><code class="inline-code">TOOLS/PKU-PokemonDatabaseEditor/Executable/Pokemon Unity Database Creator.exe</code></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Compiler depuis les sources (Visual Studio 2022)</h4>
+          <p>Ouvrir le dossier <code>TOOLS/PKU-PokemonDatabaseEditor/Source Code (Visual Studio 2017)/</code> dans Visual Studio 2022. Retargeter vers .NET Framework 4.8 si nécessaire, puis <strong>Build → Build Solution</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Utilisation de l'outil</h4>
+          <ul>
+            <li><strong>File → Open Database</strong> : sélectionner <code>veekun-pokedex.sqlite</code></li>
+            <li><strong>Import</strong> : importer des données depuis CSV ou API</li>
+            <li><strong>Export</strong> : générer une nouvelle base compatible PokémonUnity</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>🗺️ Blender Tile Mapping</h3>
+    <p>Script Python et fichier Blender pour créer des tilesets 3D pour la carte du monde.</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li>Ouvrir <code>TOOLS/Blender Tile Mapping/LGPE_Tiles.blend</code> dans Blender 3.x+</li>
+      <li>Le script <code>PKU_Tile_Toolset.py</code> automatise l'export des FBX</li>
+      <li>Les FBX exportés vont dans <code>Assets/Game/Models/FBXs/</code></li>
+    </ul>
+
+    <h3>🧩 Tiled Map Examples</h3>
+    <p>Exemples de cartes au format JSON Tiled :</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li><code>TOOLS/Tiled Map Examples/AggregateTown.json</code> — carte de ville exemple</li>
+      <li>Ces fichiers doivent être copiés dans <code>Assets/StreamingAssets/MapJson/</code></li>
+      <li>Lire <code>TOOLS/Tiled Map Examples/README.md</code> pour le format exact</li>
+    </ul>
+  </section>
+
+  <!-- 12. TESTS -->
+  <section id="tests">
+    <h2>12. Tests unitaires</h2>
+
+    <p>Le projet inclut une suite de tests MSTest dans <code>UnitTestProject/</code>.</p>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Les tests sont indépendants d'Unity</h4>
+        <p>Les tests unitaires testent la logique pure C# (framework Pokémon), sans dépendance Unity. Ils doivent être exécutés dans <strong>Visual Studio</strong> ou via <strong>dotnet test</strong>, pas dans l'éditeur Unity.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Ouvrir la solution Visual Studio</h4>
+          <pre><code>cd PokemonUnity
+# Ouvrir Pokemon Unity.sln dans Visual Studio 2022</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Exécuter les tests</h4>
+          <pre><code># Via CLI
+dotnet test UnitTestProject/UnitTestProject.csproj
+
+# Via Visual Studio
+# Test → Run All Tests (Ctrl+R, A)</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number"></div>
+        <div class="step-content">
+          <h4>Suites de tests disponibles</h4>
+          <ul>
+            <li><code>BattleTest.cs</code> — Système de combat</li>
+            <li><code>PokemonTest.cs</code> — Données et comportements Pokémon</li>
+            <li><code>MoveTest.cs</code> — Calculs d'attaques</li>
+            <li><code>ItemTest.cs</code> — Système d'objets</li>
+            <li><code>MapTest.cs</code> — Navigation sur la carte</li>
+            <li><code>PlayerTest.cs</code> / <code>TrainerTest.cs</code> — Joueur et dresseurs</li>
+            <li><code>StringTest.cs</code> — Localisation et traductions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. TROUBLESHOOTING -->
+  <section id="troubleshooting">
+    <h2>13. Résolution des problèmes courants</h2>
+
+    <h3>❌ Erreur : "Shader 'Standard' not found"</h3>
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Cause : Rendu URP activé sans la pipeline asset correcte</h4>
+        <p>Si vous utilisez URP, le shader "Standard" n'existe pas. Deux solutions :</p>
+        <ul style="padding-left:20px; margin-top:8px;">
+          <li><strong>Solution 1</strong> : Utiliser le pipeline Built-in (défaut du projet). Vérifiez dans <strong>Project Settings → Graphics</strong> que Scriptable Render Pipeline Asset est vide.</li>
+          <li><strong>Solution 2</strong> : Migrer vers URP et changer le shader en <code>"Universal Render Pipeline/Lit"</code>. Le code dans <code>TileMapGenerator.cs</code> inclut déjà un fallback automatique.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : "Can't add component 'AudioSource' because it is not a MonoBehaviour!"</h3>
+    <div class="callout success">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <h4>Résolu dans la migration</h4>
+        <p>Ce bug a été corrigé dans <code>AudioManager.cs</code>. Si l'erreur persiste, vérifiez qu'Unity a bien rechargé les scripts (attendre la recompilation ou forcer avec <strong>Assets → Refresh</strong>).</p>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : "NullReferenceException in GameManager.Awake()"</h3>
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Cause probable : base de données manquante</h4>
+        <p>Vérifiez que <code>veekun-pokedex.sqlite</code> est présent et que le chemin dans <code>GameManager.cs</code> est correct. En mode éditeur, le chemin relatif <code>..\veekun-pokedex.sqlite</code> pointe vers le dossier parent du projet Unity.</p>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : "Assembly 'PokemonEssentials' not found"</h3>
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4>Solution : régénérer les fichiers .asmdef</h4>
+        <p>Les fichiers <code>.asmdef</code> ont été créés dans cette migration. Si Unity ne les détecte pas, allez dans <strong>Assets → Reimport All</strong>. Si les DLLs tierces (<code>PokemonUnity.dll</code>) ne sont pas dans <code>Assets/Plugins/</code>, les référencer manuellement dans l'<code>.asmdef</code> sous <code>precompiledReferences</code>.</p>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : Package Cinemachine version conflict</h3>
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4>Note sur Cinemachine 3.x</h4>
+        <p>Cinemachine 3.x a des API différentes de la 2.x (namespaces, composants renommés). Si vos scènes utilisent des composants Cinemachine de la version 2.x, Unity 6 affichera des avertissements de migration. Utilisez <strong>Cinemachine → Upgrade</strong> dans le menu Unity pour migrer automatiquement les composants.</p>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : "Old Input System" warnings</h3>
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4>Les deux systèmes d'input sont actifs</h4>
+        <p>Le projet utilise l'ancien système d'input (<code>Input.GetKey()</code>) via <code>UserInputController.cs</code>. Unity 6 supporte les deux systèmes simultanément. Si vous voyez des warnings, allez dans <strong>Project Settings → Player → Active Input Handling</strong> et choisissez <strong>"Both"</strong> pour activer les deux systèmes en parallèle.</p>
+      </div>
+    </div>
+
+    <h3>❌ Erreur : TileMapGenerator ne trouve pas les cartes</h3>
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Vérifier le chemin StreamingAssets</h4>
+        <p>Les fichiers JSON doivent être dans <code>Assets/StreamingAssets/MapJson/</code>. En mode Play, Unity accède à <code>Application.streamingAssetsPath + "/MapJson/map001.json"</code>. Vérifiez que <code>map001.json</code> existe bien à cet emplacement.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. CHANGELOG -->
+  <section id="changelog-full">
+    <h2>14. Récapitulatif complet des modifications</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Fichier modifié</th>
+            <th>Type</th>
+            <th>Problème d'origine</th>
+            <th>Correction appliquée</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ProjectVersion.txt</code></td>
+            <td><span class="tag update">update</span></td>
+            <td>Version 2018.4.36f1</td>
+            <td>6000.0.47f1 (Unity 6 LTS)</td>
+          </tr>
+          <tr>
+            <td><code>Packages/manifest.json</code></td>
+            <td><span class="tag update">update</span></td>
+            <td>Packages obsolètes Unity 2018</td>
+            <td>Cinemachine 3.1.2, TMP 3.0.9, InputSystem 1.11.2 ; suppression package-manager-ui</td>
+          </tr>
+          <tr>
+            <td><code>Scene/Overworld/TileMapGenerator.cs</code></td>
+            <td><span class="tag fix">fix</span></td>
+            <td>using System.Drawing invalide ; Shader "Diffuse" supprimé ; chemin dataPath</td>
+            <td>Suppression du using ; Shader.Find("Standard") + fallback URP ; Application.streamingAssetsPath</td>
+          </tr>
+          <tr>
+            <td><code>UnityHandlers/Audio/AudioManager.cs</code></td>
+            <td><span class="tag fix">fix</span></td>
+            <td>new AudioSource() interdit ; foreach + Remove crash</td>
+            <td>AddComponent&lt;AudioSource&gt;() ; RemoveAll() ; Destroy() des sources dynamiques</td>
+          </tr>
+          <tr>
+            <td><code>UnityHandlers/Audio/MicrophoneRecorder.cs</code></td>
+            <td><span class="tag fix">fix</span></td>
+            <td>[RequireComponent(typeof(AudioClip))] invalide</td>
+            <td>Remplacé par [RequireComponent(typeof(AudioSource))]</td>
+          </tr>
+          <tr>
+            <td><code>ProjectSettings/ProjectSettings.asset</code></td>
+            <td><span class="tag update">update</span></td>
+            <td>Version sérialisée 18 ; Gamma color space ; Input System désactivé</td>
+            <td>Version 45 ; Linear color space ; New Input System activé</td>
+          </tr>
+          <tr>
+            <td><code>Scripts/LeanTween/LeanTween.asmdef</code></td>
+            <td><span class="tag new">new</span></td>
+            <td>Pas de module isolation</td>
+            <td>Assembly definition pour LeanTween</td>
+          </tr>
+          <tr>
+            <td><code>Scripts/PokemonEssentials/PokemonEssentials.asmdef</code></td>
+            <td><span class="tag new">new</span></td>
+            <td>Pas de module isolation</td>
+            <td>Assembly definition pour les scripts Pokémon avec dépendances déclarées</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>
+    <strong>PokémonUnity</strong> · Migration Unity 6 (6000.0.47f1 LTS) · Généré le Mars 2026<br/>
+    Licence : <strong>New BSD 3-Clause</strong> · Maintenus par MyzTyn, Gen<br/>
+    Documentation de migration générée automatiquement par Claude Code · Branche : <code>claude/unity-6.3-migration-XtOmH</code>
+  </p>
+</footer>
+
+</body>
+</html>

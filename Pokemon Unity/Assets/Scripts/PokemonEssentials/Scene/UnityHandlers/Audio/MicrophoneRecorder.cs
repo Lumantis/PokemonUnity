@@ -1,26 +1,32 @@
-﻿using PokemonEssentials.Interface;
+using PokemonEssentials.Interface;
 using UnityEngine;
 
 namespace PokemonUnity.Interface.UnityEngine
 {
 	/// <summary>
+	/// Enregistrement microphone via Unity — compatible Unity 6.
 	/// </summary>
-	/// Maybe a ScriptableObject, to store the recorded audio?
-	[RequireComponent(typeof(AudioClip))]
+	/// <remarks>
+	/// Correction Unity 6 :
+	/// - [RequireComponent(typeof(AudioClip))] supprimé : AudioClip n'est PAS un Component Unity.
+	///   AudioClip est un Asset (ScriptableObject/Object), non un MonoBehaviour/Component.
+	///   On utilise [RequireComponent(typeof(AudioSource))] à la place.
+	/// </remarks>
+	[RequireComponent(typeof(AudioSource))]
 	public class MicrophoneRecorder : global::UnityEngine.MonoBehaviour, IWaveData
 	{
 		public AudioClip recordedClip;
 		/// <summary>
-		/// Average loudness or power of the sound data.
+		/// Niveau sonore moyen (intensité) du flux audio enregistré.
 		/// </summary>
-		public byte intensity { get; private set; } // Placeholder for actual intensity calculation
+		public byte intensity { get; private set; }
 		/// <summary>
-		///  Time in milliseconds
+		/// Durée de l'enregistrement en millisecondes.
 		/// </summary>
 		public int time { get { return recordedClip ? (int)(recordedClip.length * 1000) : 0; } }
 
 		/// <summary>
-		/// Play the recorded audio
+		/// Lecture de l'audio enregistré.
 		/// </summary>
 		public void play()
 		{
@@ -39,28 +45,26 @@ namespace PokemonUnity.Interface.UnityEngine
 				Core.Logger?.LogError("No recorded audio clip available.");
 			}
 		}
+
 		#region Microphone Recording Logic
-		//ToDo: Should move to audio manager class, instead of being on recorded audio track?
 		/// <summary>
-		/// Start recording from the default microphone
+		/// Lance l'enregistrement depuis le microphone par défaut.
 		/// </summary>
-		/// <param name="recordLengthSeconds"></param>
+		/// <param name="recordLengthSeconds">Durée maximale en secondes.</param>
 		public void StartRecording(float recordLengthSeconds = 10)
 		{
 			if (Microphone.devices.Length > 0)
 			{
-				// Microphone available
 				recordedClip = Microphone.Start(null, false, Mathf.CeilToInt(recordLengthSeconds), 44100);
 			}
 			else
 			{
-				// Microphone not available - handle error or request permission
 				Core.Logger?.LogError("Failed to start recording: Microphone not available");
 			}
 		}
 
 		/// <summary>
-		/// Stop recording and store the AudioClip
+		/// Arrête l'enregistrement et conserve le clip AudioClip.
 		/// </summary>
 		public void StopRecording()
 		{
@@ -72,7 +76,7 @@ namespace PokemonUnity.Interface.UnityEngine
 		#endregion
 
 		/// <summary>
-		/// Example of calculating intensity (simplified version)
+		/// Calcul de l'intensité sonore (version simplifiée).
 		/// </summary>
 		private void CalculateIntensity()
 		{
@@ -83,21 +87,21 @@ namespace PokemonUnity.Interface.UnityEngine
 				float sum = 0;
 				for (int i = 0; i < samples.Length; i++)
 				{
-					sum += samples[i] * samples[i]; // Square the sample
+					sum += samples[i] * samples[i];
 				}
-				intensity = (byte)(Mathf.Sqrt(sum / samples.Length) * 256); // Normalize to byte
+				intensity = (byte)(Mathf.Sqrt(sum / samples.Length) * 256);
 			}
 		}
 
 		/// <summary>
-		/// Unity doesn't directly support saving AudioClip data to a file out of the box.
+		/// Unity ne supporte pas nativement la sauvegarde d'AudioClip en fichier WAV.
+		/// Une implémentation custom est requise.
 		/// </summary>
-		/// <param name="clip"></param>
-		/// <param name="path"></param>
+		/// <param name="clip">Le clip à sauvegarder.</param>
+		/// <param name="path">Chemin de destination.</param>
 		public static void SaveToWav(AudioClip clip, string path)
 		{
-			// This method would need to implement WAV file formatting and saving logic
-			// refer to online resources or libraries that support audio file handling
+			// Implémenter le format WAV manuellement ou utiliser une bibliothèque tierce
 		}
 	}
 }
