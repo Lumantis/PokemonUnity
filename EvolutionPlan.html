@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PokemonUnity — Plan d'évolution</title>
+  <style>
+    :root {
+      --red:     #e3350d;
+      --yellow:  #ffcb05;
+      --blue:    #3b4cca;
+      --dark:    #1a1a2e;
+      --surface: #16213e;
+      --card:    #0f3460;
+      --text:    #e0e0e0;
+      --muted:   #9090a8;
+      --accent:  #ffcb05;
+      --green:   #4caf50;
+      --orange:  #ff9800;
+      --purple:  #9c27b0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--red) 0%, var(--blue) 100%);
+      padding: 60px 40px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border: 30px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--yellow); }
+    header p.subtitle {
+      margin-top: 14px;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.82);
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+    }
+
+    /* ── Section titles ── */
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--yellow);
+      border-left: 5px solid var(--red);
+      padding-left: 16px;
+      margin: 60px 0 28px;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0 0 10px;
+    }
+
+    /* ── Priority bands ── */
+    .priority-band {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 50px 0 20px;
+    }
+    .priority-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .priority-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 26px 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .card p {
+      font-size: 0.93rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag.effort-low    { background: rgba(76,175,80,0.2);  color: var(--green);  border: 1px solid rgba(76,175,80,0.4); }
+    .tag.effort-med    { background: rgba(255,152,0,0.2);  color: var(--orange); border: 1px solid rgba(255,152,0,0.4); }
+    .tag.effort-high   { background: rgba(227,53,13,0.2);  color: var(--red);    border: 1px solid rgba(227,53,13,0.4); }
+    .tag.type-ux       { background: rgba(59,76,202,0.25); color: #7986cb;       border: 1px solid rgba(59,76,202,0.4); }
+    .tag.type-arch     { background: rgba(156,39,176,0.25);color: #ce93d8;       border: 1px solid rgba(156,39,176,0.4); }
+    .tag.type-perf     { background: rgba(0,150,136,0.25); color: #80cbc4;       border: 1px solid rgba(0,150,136,0.4); }
+    .tag.type-content  { background: rgba(255,203,5,0.15); color: var(--yellow); border: 1px solid rgba(255,203,5,0.3); }
+    .tag.type-tooling  { background: rgba(120,120,120,0.2);color: #bbb;          border: 1px solid rgba(120,120,120,0.4); }
+
+    /* ── Timeline / Roadmap ── */
+    .timeline {
+      position: relative;
+      padding-left: 34px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--red), var(--blue));
+      border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -28px; top: 6px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--dark);
+    }
+    .tl-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .tl-phase {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(255,203,5,0.1);
+      border: 1px solid rgba(255,203,5,0.25);
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .tl-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+    }
+    .tl-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .tl-body ul {
+      margin: 6px 0 0 18px;
+    }
+    .tl-body li { margin-bottom: 4px; }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px 22px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.83rem;
+      line-height: 1.7;
+      color: #c9d1d9;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    .code-block .comment { color: #8b949e; }
+    .code-block .kw      { color: #ff7b72; }
+    .code-block .type    { color: #79c0ff; }
+    .code-block .str     { color: #a5d6ff; }
+    .code-block .num     { color: #79c0ff; }
+
+    /* ── Summary table ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 20px 0;
+    }
+    .summary-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.05);
+      color: var(--yellow);
+      font-weight: 600;
+      border-bottom: 2px solid rgba(255,203,5,0.3);
+    }
+    .summary-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+    .summary-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* ── Alert box ── */
+    .alert {
+      background: rgba(227,53,13,0.12);
+      border-left: 4px solid var(--red);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      font-size: 0.92rem;
+      margin: 20px 0;
+      color: var(--text);
+    }
+    .alert strong { color: var(--red); }
+
+    .info {
+      background: rgba(59,76,202,0.12);
+      border-left: 4px solid #5c6bc0;
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      font-size: 0.92rem;
+      margin: 20px 0;
+      color: var(--text);
+    }
+    .info strong { color: #7986cb; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--surface);
+      text-align: center;
+      padding: 30px;
+      font-size: 0.83rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Pokemon<span>Unity</span> — Plan d'évolution</h1>
+  <p class="subtitle">
+    Analyse complète et feuille de route pour faire évoluer le projet
+    après la migration Unity 6.3 LTS. 14 correctifs de compatibilité déjà appliqués.
+  </p>
+  <span class="badge">Branche : claude/unity-6.3-migration-XtOmH · Mars 2026</span>
+</header>
+
+<main>
+
+  <!-- ════════════════════════════════════════════════════
+       0. RÉSUMÉ DE L'AUDIT
+  ═══════════════════════════════════════════════════════ -->
+  <h2>0 · Récapitulatif de l'audit Unity 6.3</h2>
+
+  <p style="color:var(--muted);margin-bottom:20px;">
+    Avant de parler d'avenir, voici ce qui a été corrigé lors du double audit.
+    Ces 14 fichiers contenaient des bugs bloquants ou des régressions silencieuses
+    qui auraient empêché le projet de compiler ou de s'exécuter correctement sous Unity 6.
+  </p>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Fichier</th>
+        <th>Problème corrigé</th>
+        <th>Gravité</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AudioTrack.cs</td><td>[RequireComponent(typeof(AudioClip))] invalide + AND bit à bit entre Object et bool</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>AudioData.cs</td><td>18 null-checks inversés → lazy-init jamais exécutée</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>WindowText.cs</td><td>UI.Text déprécié → TMP_Text ; O(n²) TypeText → StringBuilder</td><td style="color:var(--orange)">Élevé</td></tr>
+      <tr><td>WindowTextAdvance.cs</td><td>Cast TMP_Text → IWindow_UnformattedTextPokemon → InvalidCastException</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>IntroScene.cs</td><td>LeanTween alpha 255 → 1f (plage 0–1)</td><td style="color:var(--orange)">Élevé</td></tr>
+      <tr><td>EventScene.cs</td><td>IEnumerator update() appelé sans StartCoroutine → aucun code exécuté</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>GameAudioPlay.cs</td><td>Regex Captures[n] → Groups[n] (extraction des groupes de capture)</td><td style="color:var(--orange)">Élevé</td></tr>
+      <tr><td>SeriV4.cs</td><td>Sérialisation : V4.z au lieu de V4.w pour le composant "w"</td><td style="color:var(--orange)">Élevé</td></tr>
+      <tr><td>SeriV2/V3/Color.cs</td><td>#if guard invalide → using UnityEngine hors guard obligatoire</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>CommandMenuDisplay.cs</td><td>Bounds check inversé : Length &lt;= i → Length &gt; i avant accès tableau</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>FightMenuDisplay.cs</td><td>@buttons = null immédiatement avant usage → NullReferenceException</td><td style="color:var(--red)">Critique</td></tr>
+      <tr><td>TypingForm.cs</td><td>P/Invoke user32.dll non cross-platform ; Rect struct → RectTransform ; UI.Text → TMP_Text</td><td style="color:var(--orange)">Élevé</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert">
+    <strong>Point d'attention :</strong> Le projet compilait en Unity 2018 parce que certaines APIs
+    toléraient ces erreurs. Unity 6 est plus strict — ces bugs auraient tous produit
+    des crashes ou des comportements silencieusement incorrects en production.
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       1. PRIORITÉ IMMÉDIATE
+  ═══════════════════════════════════════════════════════ -->
+  <h2>1 · Améliorations immédiates (0–4 semaines)</h2>
+  <p style="color:var(--muted);margin-bottom:24px;">
+    Ces éléments sont soit des correctifs résiduels simples, soit des fondations
+    indispensables pour ne pas bloquer les évolutions futures.
+  </p>
+
+  <div class="priority-band">
+    <div class="priority-dot" style="background:var(--red)"></div>
+    <span class="priority-label">Haute priorité</span>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-icon">🧪</div>
+      <h3>Suite de tests automatisés</h3>
+      <p>
+        Le projet ne dispose d'aucun test. Chaque modification risque de casser
+        silencieusement une mécanique de jeu. Mettre en place Unity Test Runner
+        (EditMode + PlayMode) pour les systèmes critiques : combat, sauvegardes,
+        audio, chargement de scènes.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Migration complète vers Unity Input System</h3>
+      <p>
+        Plusieurs scripts utilisent encore l'ancien <code>PokemonUnity.Input</code>
+        basé sur l'Input Manager legacy. Le package <code>com.unity.inputsystem 1.11.2</code>
+        est déjà dans le manifest — il faut migrer tous les points d'entrée clavier/manette
+        vers <code>InputAction</code> et <code>PlayerInput</code> pour un support
+        gamepad et mobile natif.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-ux">UX</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">💾</div>
+      <h3>Système de sauvegarde robuste</h3>
+      <p>
+        Les serializers SeriV2/V3/V4/SeriColor viennent d'être corrigés mais
+        le format de sauvegarde n'est pas versionné. Ajouter un numéro de version
+        de schéma + migration automatique pour éviter les sauvegardes corrompues
+        lors des mises à jour futures.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🔊</div>
+      <h3>Refactorisation AudioManager</h3>
+      <p>
+        <code>AudioData.cs</code> instancie des <code>AudioTrack</code> via
+        des getters sans pooling. En combat, cela peut créer/détruire des centaines
+        d'objets par seconde. Migrer vers un pool d'<code>AudioSource</code>
+        géré par Unity Audio (Mixer groups).
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-perf">Performance</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Localisation (i18n)</h3>
+      <p>
+        Les textes sont en dur dans le code ou dans des fichiers CSV non versionnés.
+        Intégrer <strong>Unity Localization</strong> (<code>com.unity.localization</code>)
+        pour externaliser tous les strings, noms de Pokémon, descriptions de capacités,
+        et dialogues, avec support multilingue immédiat.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-content">Contenu</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <h3>Addressables pour les assets</h3>
+      <p>
+        Les sprites, sons et données sont probablement chargés via
+        <code>Resources.Load()</code>. En Unity 6, la pratique recommandée est
+        <strong>Addressable Assets</strong> pour un chargement asynchrone,
+        un bundling par plateforme et une réduction du temps de démarrage.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-perf">Performance</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       2. MOYEN TERME
+  ═══════════════════════════════════════════════════════ -->
+  <h2>2 · Évolutions moyen terme (1–3 mois)</h2>
+
+  <div class="priority-band">
+    <div class="priority-dot" style="background:var(--orange)"></div>
+    <span class="priority-label">Priorité moyenne</span>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-icon">⚔️</div>
+      <h3>Système de combat révisé (State Machine)</h3>
+      <p>
+        Le système de combat actuel s'appuie sur un script monolithique
+        <code>BattleScene.cs</code>. Refactoriser vers une
+        <strong>State Machine explicite</strong> (Unity StateMachine ou
+        custom FSM) : état IDLE, CHOOSE_ACTION, EXECUTE_MOVE, FAINT,
+        WIN/LOSE. Rend le code testable et extensible.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <h3>Effets visuels des capacités (VFX Graph)</h3>
+      <p>
+        Unity 6 inclut <strong>VFX Graph</strong> avec GPU particles.
+        Créer un système de prefab par type de capacité (Feu, Eau, Électrik…)
+        déclenché lors des animations d'attaque. Remplace les animations sprite
+        statiques actuelles.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-ux">UX</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🗺️</div>
+      <h3>Système de carte du monde</h3>
+      <p>
+        Ajouter une vue carte interactive avec zoom, régions, villes et
+        routes. Utiliser <strong>Unity Tilemap</strong> (déjà dans le manifest)
+        avec des tuiles de terrain procédurales et des marqueurs de progression.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-content">Contenu</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h3>IA des dresseurs améliorée</h3>
+      <p>
+        L'IA actuelle choisit probablement les mouvements aléatoirement ou
+        avec des règles fixes. Implémenter un système de scoring basé sur
+        les types, PP restants et état des Pokémon pour une IA plus difficile
+        et cohérente, configurable par niveau.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>Support mobile natif</h3>
+      <p>
+        Avec Input System déjà présent, ajouter des contrôles tactiles :
+        D-pad virtuel, boutons A/B/Start, pinch-to-zoom sur la carte.
+        Adapter les Canvas pour les résolutions mobiles (Safe Area,
+        notch support). Cible : Android + iOS via IL2CPP.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-ux">UX</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🎵</div>
+      <h3>Musique adaptative (Audio Mixer)</h3>
+      <p>
+        Utiliser les <strong>Audio Mixer Groups</strong> de Unity 6 pour une
+        transition fluide entre les thèmes (exploration → combat → victoire)
+        avec crossfade automatique, effets de filtre et contrôle de volume
+        par catégorie (musique, SFX, voix).
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-low">Effort faible</span>
+        <span class="tag type-ux">UX</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       3. LONG TERME
+  ═══════════════════════════════════════════════════════ -->
+  <h2>3 · Vision long terme (3–12 mois)</h2>
+
+  <div class="priority-band">
+    <div class="priority-dot" style="background:var(--blue)"></div>
+    <span class="priority-label">Priorité basse / Vision</span>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <h3>Multijoueur en ligne</h3>
+      <p>
+        Combats PvP, échanges de Pokémon et classement. Utiliser
+        <strong>Unity Gaming Services</strong> (Lobby + Relay + Vivox) ou
+        <strong>Netcode for GameObjects</strong>. Architecture : serveur
+        autoritaire pour valider les combats, prévenir la triche.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <h3>Éditeur de maps intégré</h3>
+      <p>
+        Permettre à la communauté de créer des régions personnalisées via
+        un éditeur in-engine. S'appuyer sur Unity Tilemap + un système
+        d'export vers des AssetBundles Addressables pour des DLC de maps.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-tooling">Tooling</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <h3>Système de succès et classement</h3>
+      <p>
+        Intégrer <strong>Unity Gaming Services — Leaderboards</strong> et
+        <strong>Cloud Save</strong> pour une progression cross-device,
+        des succès (Pokédex complet, champion de ligue…) et un classement
+        PvP mondial.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-med">Effort moyen</span>
+        <span class="tag type-content">Contenu</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🧬</div>
+      <h3>Pokémon procéduraux (génération)</h3>
+      <p>
+        Système de génération procédurale de Pokémon "fakemon" : stats,
+        types, mouvements et sprites assemblés depuis des parties préfabriquées.
+        Utiliser <strong>Unity Burst + Job System</strong> pour les calculs
+        de génétique et d'IA de rencontre.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-content">Contenu</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🥽</div>
+      <h3>Mode exploration 3D / AR</h3>
+      <p>
+        Exploiter le <strong>Render Pipeline URP de Unity 6</strong> pour
+        une vue 3D isométrique en overworld. Extension AR possible via
+        <strong>AR Foundation</strong> pour des rencontres Pokémon en
+        réalité augmentée sur mobile.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-ux">UX</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3>API de mods / Plugin system</h3>
+      <p>
+        Exposer un système de hooks permettant des mods externes :
+        nouveaux Pokémon, nouvelles régions, nouvelles mécaniques de combat.
+        Architecture par <em>Assembly Definition</em> isolées + interfaces
+        publiques stables.
+      </p>
+      <div class="tag-list">
+        <span class="tag effort-high">Effort élevé</span>
+        <span class="tag type-arch">Architecture</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       4. REFACTORISATIONS TECHNIQUES
+  ═══════════════════════════════════════════════════════ -->
+  <h2>4 · Refactorisations techniques recommandées</h2>
+
+  <p style="color:var(--muted);margin-bottom:24px;">
+    Indépendantes des fonctionnalités, ces refactos améliorent la maintenabilité
+    et les performances à long terme.
+  </p>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Refacto 1</span>
+        <span class="tl-title">Découplage Scene/Screen via Dependency Injection</span>
+      </div>
+      <div class="tl-body">
+        Actuellement, les scènes accèdent aux écrans via <code>GameManager.current.game.Scenes.X</code>
+        (couplage fort). Introduire un container DI léger (ou Unity's own DI via
+        <code>IServiceLocator</code>) pour injecter les dépendances et faciliter les tests unitaires.
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Refacto 2</span>
+        <span class="tl-title">EventScene → Unity Coroutine natif</span>
+      </div>
+      <div class="tl-body">
+        Le système d'événements custom (<code>OnUpdateEvent</code>, <code>OnATriggerEvent</code>)
+        double Unity's own coroutine/event system. Réécrire en <code>async/await</code> C# 9
+        ou en coroutines Unity pures avec <code>WaitUntil</code> / <code>WaitForSeconds</code>
+        pour plus de lisibilité et de debuggabilité.
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Refacto 3</span>
+        <span class="tl-title">ScriptableObjects pour les données statiques</span>
+      </div>
+      <div class="tl-body">
+        Les données des Pokémon, mouvements et objets sont actuellement en C# pur ou CSV.
+        Migrer vers des <strong>ScriptableObjects</strong> pour bénéficier de l'éditeur
+        Unity, de l'inspection visuelle et du hot-reload sans recompilation.
+        <ul>
+          <li><code>PokemonDataSO</code> : stats, types, évolutions</li>
+          <li><code>MoveDataSO</code> : puissance, précision, effets</li>
+          <li><code>ItemDataSO</code> : effets, utilisation en combat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Refacto 4</span>
+        <span class="tl-title">Profiling et optimisation mémoire</span>
+      </div>
+      <div class="tl-body">
+        Utiliser <strong>Unity Memory Profiler</strong> et <strong>CPU Profiler</strong>
+        pour identifier les allocations fréquentes en combat (Update loop, coroutines).
+        Cibles prioritaires :
+        <ul>
+          <li>Pool d'objets pour les effets visuels</li>
+          <li>Éviter les closures/delegates dans les boucles serrées</li>
+          <li>Utiliser <code>Span&lt;T&gt;</code> / <code>NativeArray</code> pour les calculs de combat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Refacto 5</span>
+        <span class="tl-title">CI/CD avec GitHub Actions + Unity Build Server</span>
+      </div>
+      <div class="tl-body">
+        Automatiser les builds et les tests à chaque push. Pipeline suggéré :
+        <ul>
+          <li>Lint C# (dotnet format)</li>
+          <li>Unity Test Runner (EditMode)</li>
+          <li>Build WebGL + Android debug</li>
+          <li>Upload artefacts sur GitHub Releases</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       5. EXEMPLE DE CODE
+  ═══════════════════════════════════════════════════════ -->
+  <h2>5 · Exemples d'implémentation</h2>
+
+  <h3 style="margin-bottom:8px">5.1 — Migration Input System (pattern recommandé)</h3>
+  <div class="code-block">
+<span class="comment">// AVANT — Legacy Input Manager (non cross-platform)</span>
+<span class="kw">if</span> (PokemonUnity.Input.press(PokemonUnity.Input.A))
+    confirmAction();
+
+<span class="comment">// APRÈS — Unity Input System</span>
+<span class="comment">// Dans un MonoBehaviour avec [RequireComponent(typeof(PlayerInput))]</span>
+<span class="kw">private</span> <span class="type">InputAction</span> _confirmAction;
+
+<span class="kw">private void</span> OnEnable()
+{
+    _confirmAction = GetComponent&lt;<span class="type">PlayerInput</span>&gt;()
+        .actions[<span class="str">"Confirm"</span>];
+    _confirmAction.performed += OnConfirm;
+    _confirmAction.Enable();
+}
+
+<span class="kw">private void</span> OnConfirm(<span class="type">InputAction.CallbackContext</span> ctx)
+    => confirmAction();
+
+<span class="kw">private void</span> OnDisable()
+{
+    _confirmAction.performed -= OnConfirm;
+    _confirmAction.Disable();
+}
+  </div>
+
+  <h3 style="margin-bottom:8px;margin-top:24px">5.2 — ScriptableObject pour données Pokémon</h3>
+  <div class="code-block">
+<span class="comment">// PokemonDataSO.cs — données éditables dans l'inspecteur Unity</span>
+[<span class="type">CreateAssetMenu</span>(menuName = <span class="str">"PokemonUnity/Pokemon Data"</span>)]
+<span class="kw">public class</span> <span class="type">PokemonDataSO</span> : <span class="type">ScriptableObject</span>
+{
+    <span class="kw">public</span> <span class="type">Pokemons</span> id;
+    <span class="kw">public</span> <span class="type">string</span>   displayName;
+    <span class="kw">public</span> <span class="type">Types</span>[]  types        = <span class="kw">new</span> <span class="type">Types</span>[<span class="num">2</span>];
+    <span class="kw">public</span> <span class="type">int</span>     baseHp;
+    <span class="kw">public</span> <span class="type">int</span>     baseAttack;
+    <span class="kw">public</span> <span class="type">int</span>     baseDefense;
+    <span class="kw">public</span> <span class="type">int</span>     baseSpeed;
+    <span class="kw">public</span> <span class="type">Sprite</span>  frontSprite;
+    <span class="kw">public</span> <span class="type">Sprite</span>  backSprite;
+    <span class="kw">public</span> <span class="type">AudioClip</span> cry;
+
+    <span class="comment">// Référence aux évolutions via d'autres SO (pas de couplage string)</span>
+    <span class="kw">public</span> <span class="type">PokemonDataSO</span>[] evolutions;
+    <span class="kw">public</span> <span class="type">int</span>[]            evolutionLevels;
+}
+  </div>
+
+  <h3 style="margin-bottom:8px;margin-top:24px">5.3 — State Machine de combat</h3>
+  <div class="code-block">
+<span class="comment">// IBattleState.cs — interface de chaque état</span>
+<span class="kw">public interface</span> <span class="type">IBattleState</span>
+{
+    <span class="kw">void</span> Enter(<span class="type">BattleContext</span> ctx);
+    <span class="kw">void</span> Execute(<span class="type">BattleContext</span> ctx);
+    <span class="kw">void</span> Exit(<span class="type">BattleContext</span> ctx);
+}
+
+<span class="comment">// Exemple d'état : sélection de la commande joueur</span>
+<span class="kw">public class</span> <span class="type">ChooseCommandState</span> : <span class="type">IBattleState</span>
+{
+    <span class="kw">public void</span> Enter(<span class="type">BattleContext</span> ctx)
+        => ctx.CommandMenu.Show();
+
+    <span class="kw">public void</span> Execute(<span class="type">BattleContext</span> ctx)
+    {
+        <span class="kw">if</span> (ctx.CommandMenu.HasSelection)
+            ctx.TransitionTo(<span class="kw">new</span> <span class="type">ExecuteMoveState</span>(ctx.CommandMenu.Selected));
+    }
+
+    <span class="kw">public void</span> Exit(<span class="type">BattleContext</span> ctx)
+        => ctx.CommandMenu.Hide();
+}
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       6. ROADMAP VISUELLE
+  ═══════════════════════════════════════════════════════ -->
+  <h2>6 · Roadmap synthétique</h2>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Phase 0 — Terminé</span>
+        <span class="tl-title">Migration Unity 6.3 LTS + double audit</span>
+      </div>
+      <div class="tl-body">
+        14 fichiers corrigés : bugs critiques éliminés, APIs dépréciées migrées,
+        cross-platform assuré. Base stable pour la suite.
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Phase 1 — Semaines 1–4</span>
+        <span class="tl-title">Fondations</span>
+      </div>
+      <div class="tl-body">
+        Tests automatisés · Migration Input System · Versioning des sauvegardes ·
+        Refacto AudioManager · Localization Unity
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Phase 2 — Mois 1–3</span>
+        <span class="tl-title">Gameplay & UX</span>
+      </div>
+      <div class="tl-body">
+        State Machine de combat · VFX Graph pour les capacités ·
+        Support mobile (tactile + layout) · Musique adaptative ·
+        Carte du monde interactive
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Phase 3 — Mois 3–6</span>
+        <span class="tl-title">Contenu & Performance</span>
+      </div>
+      <div class="tl-body">
+        Addressables pour les assets · ScriptableObjects pour les données ·
+        IA des dresseurs améliorée · CI/CD automatisé ·
+        Profiling mémoire et optimisations
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-phase">Phase 4 — Mois 6–12</span>
+        <span class="tl-title">Vision & Communauté</span>
+      </div>
+      <div class="tl-body">
+        Multijoueur en ligne · Classements · Génération procédurale ·
+        Éditeur de maps · Système de mods · Support AR optionnel
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info">
+    <strong>Conseil :</strong> Ne pas tout faire en même temps. Chaque phase doit se terminer
+    par une version jouable et testée. La Phase 1 (fondations) est la plus critique —
+    des tests automatisés dès maintenant éviteront des régressions coûteuses à toutes
+    les phases suivantes.
+  </div>
+
+</main>
+
+<footer>
+  PokemonUnity · Plan d'évolution · Généré le 10 mars 2026
+  · Branche git : <code>claude/unity-6.3-migration-XtOmH</code>
+</footer>
+
+</body>
+</html>
