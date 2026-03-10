@@ -17,8 +17,8 @@ namespace PokemonUnity.Interface.UnityEngine
 	public class WindowText : Window, IWindow_UnformattedTextPokemon//, IWindow_AdvancedTextPokemon, IWindow_CommandPokemon
 	{
 		#region Unity's MonoBehavior Inspector Properties
-		protected global::UnityEngine.UI.Text text;
-		protected global::UnityEngine.UI.Text textShadow;
+		[SerializeField] protected TMPro.TMP_Text text;
+		[SerializeField] protected TMPro.TMP_Text textShadow;
 		protected Coroutine displayCoroutine;
 		/// <summary>
 		/// Text to be displayed after parsing
@@ -178,22 +178,34 @@ namespace PokemonUnity.Interface.UnityEngine
 
 		IEnumerator TypeText()
 		{
+			// Use StringBuilder to avoid O(n²) string concatenation in the loop
+			var visibleText = new StringBuilder(textDisplay.Length);
+			var visibleShadow = new StringBuilder(textDisplay.Length);
+			string fullText = textDisplay.ToString();
+			int totalLength = fullText.Length;
+			int visibleCount = 0;
+
 			text.text = "";
 			textShadow.text = "";
-			int totalLength = textDisplay.Length;
-			int visibleCount = 0;
 
 			while (visibleCount < totalLength)
 			{
-				text.text += textDisplay[visibleCount];
-				textShadow.text += textDisplay[visibleCount];
+				char c = fullText[visibleCount];
+				visibleText.Append(c);
+				visibleShadow.Append(c);
 				visibleCount++;
+
+				text.SetText(visibleText);
+				textShadow.SetText(visibleShadow);
+
 				yield return new WaitForSeconds(isFastSpeed ? defaultCharSpeed / 2 : defaultCharSpeed);
 
-				//if a timer tag is found, wait for the specified time
-				if (textDisplay[visibleCount - 1] == '\\' && textDisplay.ToString().Substring(visibleCount - 1).StartsWith("\\wait["))
+				if (visibleCount >= totalLength) break;
+
+				// If a \wait[] tag is found, wait for the specified time
+				if (fullText[visibleCount - 1] == '\\' && fullText.Substring(visibleCount - 1).StartsWith("\\wait["))
 				{
-					var match = Regex.Match(textDisplay.ToString().Substring(visibleCount - 1), @"\\wait\[(\d+)\]");
+					var match = Regex.Match(fullText.Substring(visibleCount - 1), @"\\wait\[(\d+)\]");
 					if (match.Success)
 					{
 						int waitTime = int.Parse(match.Groups[1].Value);
@@ -202,20 +214,20 @@ namespace PokemonUnity.Interface.UnityEngine
 					}
 				}
 
-				//if a custom tag is found, apply the color to the text
-				if (textDisplay[visibleCount - 1] == '<' && textDisplay.ToString().Substring(visibleCount - 1).StartsWith("<color="))
+				// If a <color=...> tag is found, add the tag without frame delay
+				if (visibleCount < totalLength && fullText[visibleCount - 1] == '<' && fullText.Substring(visibleCount - 1).StartsWith("<color="))
 				{
 					// "<color=#FF0000>text</color>" | <color=#FF0000> = 15 char length
-					string match = textDisplay.ToString().Substring(visibleCount - 1, 15);
-					text.text += match; // Add the color tag to the text, but not shadowText
-					visibleCount += match.Length - 1; // Skip over the entire wait tag
+					string tag = fullText.Substring(visibleCount - 1, Mathf.Min(15, totalLength - visibleCount + 1));
+					visibleText.Append(tag);
+					visibleCount += tag.Length - 1;
 				}
-				if (textDisplay[visibleCount - 1] == '<' && textDisplay.ToString().Substring(visibleCount - 1).StartsWith("</color>"))
+				if (visibleCount < totalLength && fullText[visibleCount - 1] == '<' && fullText.Substring(visibleCount - 1).StartsWith("</color>"))
 				{
-					// "<color=#FF0000>text</color>" | </color> = 8 char length
-					string match = textDisplay.ToString().Substring(visibleCount - 1, 8);
-					text.text += match; // Add the color tag to the text, but not shadowText
-					visibleCount += match.Length - 1; // Skip over the entire wait tag
+					// "</color>" = 8 char length
+					string tag = fullText.Substring(visibleCount - 1, Mathf.Min(8, totalLength - visibleCount + 1));
+					visibleText.Append(tag);
+					visibleCount += tag.Length - 1;
 				}
 			}
 

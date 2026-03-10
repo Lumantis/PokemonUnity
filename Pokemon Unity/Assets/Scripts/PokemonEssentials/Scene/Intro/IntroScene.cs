@@ -96,7 +96,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			//@pic.name = "Graphics/Titles/" + @pics[@index];
 			@pic.sprite = @pics[@index];
 			//@pic.moveOpacity(15, 0, 255); // fade to opacity 255 in 15 frames after waiting 0 frames
-			LeanTween.alphaCanvas(pic.GetComponent<CanvasGroup>(), 255, 15);
+			LeanTween.alphaCanvas(pic.GetComponent<CanvasGroup>(), 1f, 15);
 			pictureWait();
 			Timer = 0; // reset the timer
 			//onUpdate.set(method(:timer)); // call timer every frame
@@ -149,11 +149,11 @@ namespace PokemonUnity.Interface.UnityEngine
 			//@pic.name = "Graphics/Titles/" + @splash;
 			@pic.sprite = @splash;
 			//@pic.moveOpacity(15, 0, 255); // fade to opacity 255 in 15 frames after waiting 0 frames
-			LeanTween.alphaCanvas(pic.GetComponent<CanvasGroup>(), 255, 15);
+			LeanTween.alphaCanvas(pic.GetComponent<CanvasGroup>(), 1f, 15);
 			//@pic2.name = "Graphics/Titles/start";
 			@pic2.sprite = @start;
 			//@pic2.moveOpacity(15, 0, 255); // fade to opacity 255 in 15 frames after waiting 0 frames
-			LeanTween.alphaCanvas(pic2.GetComponent<CanvasGroup>(), 255, 15);
+			LeanTween.alphaCanvas(pic2.GetComponent<CanvasGroup>(), 1f, 15);
 			pictureWait();
 			//onUpdate.set(method(:splashUpdate));  // call splashUpdate every frame
 			//if (onUpdate) splashUpdate();
@@ -171,7 +171,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			//if (@Timer >= 32)
 			//{
 			//	//@pic2.moveOpacity(0, 0, 8 * (@Timer - 32)); //fade out
-				LeanTween.alphaCanvas(pic2.GetComponent<CanvasGroup>(), 255, 80);
+				LeanTween.alphaCanvas(pic2.GetComponent<CanvasGroup>(), 1f, 80);
 			//}
 			//else
 			//{

@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace PokemonUnity.Interface.UnityEngine
 {
-	//[RequireComponent(typeof(AudioSource))]	//One Source
-	[RequireComponent(typeof(AudioClip))]		//Many Clips
+	// AudioTrack is a plain C# class (not MonoBehaviour).
+	// [RequireComponent] only works on MonoBehaviour — removed invalid attribute.
 	public class AudioTrack : //global::UnityEngine.MonoBehaviour,
 		PokemonEssentials.Interface.IAudioObject,
 		PokemonEssentials.Interface.IAudioBGM,
@@ -116,8 +116,8 @@ namespace PokemonUnity.Interface.UnityEngine
 		{
 			//AudioManager.AudioHandler.se_stop();
 			(AudioManager.AudioHandler as AudioManager).seSources
-				.Find(s => (s.clip & s.isPlaying))
-				.Stop();//.Remove(this);
+				.Find(s => s.clip == this.clip && s.isPlaying)
+				?.Stop();
 		}
 
 		void IAudioSE.play()

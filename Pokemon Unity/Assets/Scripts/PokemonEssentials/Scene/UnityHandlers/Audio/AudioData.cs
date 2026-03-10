@@ -56,27 +56,27 @@ namespace PokemonUnity.Interface.UnityEngine
 		private AudioTrack soundEffectSword;
 		private AudioTrack soundEffectPkmnCry_;
 
-		public IAudioObject	SoundEffectMenu				{ get {	if (_soundEffectMenu			!= null	&&	soundEffectMenu				!= null)	soundEffectMenu				= new AudioTrack(_soundEffectMenu);				return soundEffectMenu			;	} }
-		public IAudioObject	SoundEffectBump				{ get {	if (_soundEffectBump			!= null	&&	soundEffectBump				!= null)	soundEffectBump				= new AudioTrack(_soundEffectBump);				return soundEffectBump			;	} }
-		public IAudioObject	SoundEffectChoose			{ get {	if (_soundEffectChoose			!= null	&&	soundEffectChoose			!= null)	soundEffectChoose			= new AudioTrack(_soundEffectChoose);			return soundEffectChoose		;	} }
-		public IAudioObject	SoundEffectBuzzer			{ get {	if (_soundEffectBuzzer			!= null	&&	soundEffectBuzzer			!= null)	soundEffectBuzzer			= new AudioTrack(_soundEffectBuzzer);			return soundEffectBuzzer		;	} }
-		public IAudioObject	SoundEffectExpFull			{ get {	if (_soundEffectExpFull			!= null	&&	soundEffectExpFull			!= null)	soundEffectExpFull			= new AudioTrack(_soundEffectExpFull);			return soundEffectExpFull		;	} }
+		public IAudioObject	SoundEffectMenu				{ get {	if (_soundEffectMenu			!= null	&&	soundEffectMenu				== null)	soundEffectMenu				= new AudioTrack(_soundEffectMenu);				return soundEffectMenu			;	} }
+		public IAudioObject	SoundEffectBump				{ get {	if (_soundEffectBump			!= null	&&	soundEffectBump				== null)	soundEffectBump				= new AudioTrack(_soundEffectBump);				return soundEffectBump			;	} }
+		public IAudioObject	SoundEffectChoose			{ get {	if (_soundEffectChoose			!= null	&&	soundEffectChoose			== null)	soundEffectChoose			= new AudioTrack(_soundEffectChoose);			return soundEffectChoose		;	} }
+		public IAudioObject	SoundEffectBuzzer			{ get {	if (_soundEffectBuzzer			!= null	&&	soundEffectBuzzer			== null)	soundEffectBuzzer			= new AudioTrack(_soundEffectBuzzer);			return soundEffectBuzzer		;	} }
+		public IAudioObject	SoundEffectExpFull			{ get {	if (_soundEffectExpFull			!= null	&&	soundEffectExpFull			== null)	soundEffectExpFull			= new AudioTrack(_soundEffectExpFull);			return soundEffectExpFull		;	} }
 		//Battle
-		public IAudioObject	SoundEffectThrow			{ get {	if (_soundEffectThrow			!= null	&&	soundEffectThrow			!= null)	soundEffectThrow			= new AudioTrack(_soundEffectThrow);			return soundEffectThrow			;	} }
-		public IAudioObject	SoundEffectRecall			{ get {	if (_soundEffectRecall			!= null	&&	soundEffectRecall			!= null)	soundEffectRecall			= new AudioTrack(_soundEffectRecall);			return soundEffectRecall		;	} }
-		public IAudioObject	SoundEffectBallShake		{ get {	if (_soundEffectBallShake		!= null	&&	soundEffectBallShake		!= null)	soundEffectBallShake		= new AudioTrack(_soundEffectBallShake);		return soundEffectBallShake		;	} }
-		public IAudioObject	SoundEffectBallDrop			{ get {	if (_soundEffectBallDrop		!= null	&&	soundEffectBallDrop			!= null)	soundEffectBallDrop			= new AudioTrack(_soundEffectBallDrop);			return soundEffectBallDrop		;	} }
-		public IAudioObject	SoundEffectJumpToBall		{ get {	if (_soundEffectJumpToBall		!= null	&&	soundEffectJumpToBall		!= null)	soundEffectJumpToBall		= new AudioTrack(_soundEffectJumpToBall);		return soundEffectJumpToBall	;	} }
-		public IAudioObject	SoundEffectJump				{ get {	if (_soundEffectJump			!= null	&&	soundEffectJump				!= null)	soundEffectJump				= new AudioTrack(_soundEffectJump);				return soundEffectJump			;	} }
-		public IAudioObject	SoundEffectComputerClose	{ get {	if (_soundEffectComputerClose	!= null	&&	soundEffectComputerClose	!= null)	soundEffectComputerClose	= new AudioTrack(_soundEffectComputerClose);	return soundEffectComputerClose	;	} }
-		public IAudioObject	SoundEffectNormalDamage		{ get {	if (_soundEffectNormalDamage	!= null	&&	soundEffectNormalDamage		!= null)	soundEffectNormalDamage		= new AudioTrack(_soundEffectNormalDamage);		return soundEffectNormalDamage	;	} }
-		public IAudioObject	SoundEffectNotVeryDamage	{ get {	if (_soundEffectNotVeryDamage	!= null	&&	soundEffectNotVeryDamage	!= null)	soundEffectNotVeryDamage	= new AudioTrack(_soundEffectNotVeryDamage);	return soundEffectNotVeryDamage	;	} }
-		public IAudioObject	SoundEffectSuperDamage		{ get {	if (_soundEffectSuperDamage		!= null	&&	soundEffectSuperDamage		!= null)	soundEffectSuperDamage		= new AudioTrack(_soundEffectSuperDamage);		return soundEffectSuperDamage	;	} }
-		public IAudioObject	SoundEffectFaint			{ get {	if (_soundEffectFaint			!= null	&&	soundEffectFaint			!= null)	soundEffectFaint			= new AudioTrack(_soundEffectFaint);			return soundEffectFaint			;	} }
+		public IAudioObject	SoundEffectThrow			{ get {	if (_soundEffectThrow			!= null	&&	soundEffectThrow			== null)	soundEffectThrow			= new AudioTrack(_soundEffectThrow);			return soundEffectThrow			;	} }
+		public IAudioObject	SoundEffectRecall			{ get {	if (_soundEffectRecall			!= null	&&	soundEffectRecall			== null)	soundEffectRecall			= new AudioTrack(_soundEffectRecall);			return soundEffectRecall		;	} }
+		public IAudioObject	SoundEffectBallShake		{ get {	if (_soundEffectBallShake		!= null	&&	soundEffectBallShake		== null)	soundEffectBallShake		= new AudioTrack(_soundEffectBallShake);		return soundEffectBallShake		;	} }
+		public IAudioObject	SoundEffectBallDrop			{ get {	if (_soundEffectBallDrop		!= null	&&	soundEffectBallDrop			== null)	soundEffectBallDrop			= new AudioTrack(_soundEffectBallDrop);			return soundEffectBallDrop		;	} }
+		public IAudioObject	SoundEffectJumpToBall		{ get {	if (_soundEffectJumpToBall		!= null	&&	soundEffectJumpToBall		== null)	soundEffectJumpToBall		= new AudioTrack(_soundEffectJumpToBall);		return soundEffectJumpToBall	;	} }
+		public IAudioObject	SoundEffectJump				{ get {	if (_soundEffectJump			!= null	&&	soundEffectJump				== null)	soundEffectJump				= new AudioTrack(_soundEffectJump);				return soundEffectJump			;	} }
+		public IAudioObject	SoundEffectComputerClose	{ get {	if (_soundEffectComputerClose	!= null	&&	soundEffectComputerClose	== null)	soundEffectComputerClose	= new AudioTrack(_soundEffectComputerClose);	return soundEffectComputerClose	;	} }
+		public IAudioObject	SoundEffectNormalDamage		{ get {	if (_soundEffectNormalDamage	!= null	&&	soundEffectNormalDamage		== null)	soundEffectNormalDamage		= new AudioTrack(_soundEffectNormalDamage);		return soundEffectNormalDamage	;	} }
+		public IAudioObject	SoundEffectNotVeryDamage	{ get {	if (_soundEffectNotVeryDamage	!= null	&&	soundEffectNotVeryDamage	== null)	soundEffectNotVeryDamage	= new AudioTrack(_soundEffectNotVeryDamage);	return soundEffectNotVeryDamage	;	} }
+		public IAudioObject	SoundEffectSuperDamage		{ get {	if (_soundEffectSuperDamage		!= null	&&	soundEffectSuperDamage		== null)	soundEffectSuperDamage		= new AudioTrack(_soundEffectSuperDamage);		return soundEffectSuperDamage	;	} }
+		public IAudioObject	SoundEffectFaint			{ get {	if (_soundEffectFaint			!= null	&&	soundEffectFaint			== null)	soundEffectFaint			= new AudioTrack(_soundEffectFaint);			return soundEffectFaint			;	} }
 		// Versus Battle, Flashing of "VS" text
-		public IAudioObject	SoundEffectFlash			{ get {	if (_soundEffectFlash			!= null	&&	soundEffectFlash			!= null)	soundEffectFlash			= new AudioTrack(_soundEffectFlash);			return soundEffectFlash			;	} }
+		public IAudioObject	SoundEffectFlash			{ get {	if (_soundEffectFlash			!= null	&&	soundEffectFlash			== null)	soundEffectFlash			= new AudioTrack(_soundEffectFlash);			return soundEffectFlash			;	} }
 		// Versus Battle, After flashing of "VS" text, Sword shwing sound effect
-		public IAudioObject	SoundEffectSword			{ get {	if (_soundEffectSword			!= null	&&	soundEffectSword			!= null)	soundEffectSword			= new AudioTrack(_soundEffectSword);			return soundEffectSword			;	} }
+		public IAudioObject	SoundEffectSword			{ get {	if (_soundEffectSword			!= null	&&	soundEffectSword			== null)	soundEffectSword			= new AudioTrack(_soundEffectSword);			return soundEffectSword			;	} }
 		public IAudioObject	SoundEffectPkmnCry_			{ get {	if (SoundEffectPkmnCry			!= null	&&	SoundEffectPkmnCry.ContainsKey(Pokemon))	soundEffectPkmnCry_		= new AudioTrack(SoundEffectPkmnCry[Pokemon]);	return soundEffectPkmnCry_		;	} }
 
 

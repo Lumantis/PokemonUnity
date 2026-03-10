@@ -18,13 +18,13 @@ namespace PokemonUnity.Interface.UnityEngine
 			System.Text.RegularExpressions.Match m1 = r1.Match(name);
 			System.Text.RegularExpressions.Match m2 = r2.Match(name);
 			if (m1.Success) { //str[/^(.*)\:\s*(\d+)\s*\:\s*(\d+)\s*$/]
-				string file = m1.Captures[1].Value; //$1;
-				int volume = int.Parse(m1.Captures[2].Value); //$2.to_i;
-				int pitch = int.Parse(m1.Captures[3].Value); //$3.to_i;
+				string file = m1.Groups[1].Value; //$1;
+				int volume = int.Parse(m1.Groups[2].Value); //$2.to_i;
+				int pitch = int.Parse(m1.Groups[3].Value); //$3.to_i;
 				return new AudioTrack().initialize(file,volume,pitch);
 			} else if (m2.Success) {//str[/^(.*)\:\s*(\d+)\s*$/]
-				string file = m2.Captures[1].Value; //$1;
-				int volume = int.Parse(m2.Captures[2].Value); //$2.to_i;
+				string file = m2.Groups[1].Value; //$1;
+				int volume = int.Parse(m2.Groups[2].Value); //$2.to_i;
 				return new AudioTrack().initialize(file,volume,100);
 			} else {
 				return new AudioTrack().initialize(name,100,100);

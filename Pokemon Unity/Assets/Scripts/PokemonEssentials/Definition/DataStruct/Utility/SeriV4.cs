@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Runtime.Serialization;
 using PokemonEssentials.Interface;
-#if (DEBUG == false || UNITY_EDITOR == true)
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -123,7 +123,7 @@ namespace PokemonUnity.Utility
 			info.AddValue("x", V4.x, typeof(float));
 			info.AddValue("y", V4.y, typeof(float));
 			info.AddValue("z", V4.z, typeof(float));
-			info.AddValue("w", V4.z, typeof(float));
+			info.AddValue("w", V4.w, typeof(float));
 		}
 		public override string ToString()
 		{

@@ -38,7 +38,7 @@ namespace PokemonUnity.Interface.UnityEngine
 		string IWindow_AdvancedTextPokemon.text {
 			get { return textDisplay.ToString(); }
 			set {
-				((IWindow_UnformattedTextPokemon)text).text = value;
+				((IWindow_UnformattedTextPokemon)this).text = value;
 				setText(value);
 				DisplayText(); //Animation Coroutine
 			}

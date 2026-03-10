@@ -88,16 +88,16 @@ namespace PokemonUnity.Interface.UnityEngine
 				//}
 				if (hasRunning)
 				{
-					update();
+					StartCoroutine(update());
 				}
-				else
+	else
 				{
 					break;
 				}
 			} while (true);
 
 			//extraframes.times { update(); };
-			for(int i = 0; i < extraframes; i++) { update(); };
+			for(int i = 0; i < extraframes; i++) { StartCoroutine(update()); };
 		}
 
 		//http://answers.unity.com/answers/46120/view.html
@@ -253,7 +253,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			if (framecount > 0)
 				framecount--;
 			if (framecount == 0)
-				update();
+				StartCoroutine(update());
 		}
 		private void FixedUpdate()
 		{

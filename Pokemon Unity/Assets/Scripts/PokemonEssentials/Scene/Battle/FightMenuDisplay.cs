@@ -180,7 +180,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			SetNarrowFont(@info.contents);
 			@ctag = shadowctag(PokeBattle_SceneConstants.MENUBASECOLOR,
 							 PokeBattle_SceneConstants.MENUSHADOWCOLOR);*/
-			@buttons = null;
+			// @buttons is set via [SerializeField] in the Unity Inspector — do not null it here.
 			_battler = battler;
 			@index = 0;
 			@megaButton = 0; // 0=don't show, 1=show, 2=pressed

@@ -68,9 +68,9 @@ namespace PokemonUnity.Interface.UnityEngine
 		/// </summary>
 		public  global::UnityEngine.UI.Image shadow;
 		public  global::UnityEngine.UI.Image subject;
-		public  global::UnityEngine.UI.Text helpwindow;
-		public  global::UnityEngine.UI.Text gender;
-		public  global::UnityEngine.UI.Text genderText;
+		public  TMPro.TMP_Text helpwindow;
+		public  TMPro.TMP_Text gender;
+		public  TMPro.TMP_Text genderText;
 		public IWindow_TextEntry_Keyboard entry;
 		public ICharacterEntryHelper helper;
 		public NameEntryCursor cursor;
@@ -85,9 +85,9 @@ namespace PokemonUnity.Interface.UnityEngine
 		private int cursorpos;
 
 		public static bool UseKeyboard { get; set; }
-		public static bool IsCapLockOn { get { return (((ushort)GetKeyState(0x14)) & 0xffff) != 0; } }
-		[System.Runtime.InteropServices.DllImport("user32")]
-		public static extern short GetKeyState(int keyCode);
+		// CapsLock state detection: Windows-only P/Invoke removed for Unity 6 cross-platform compatibility.
+		// Character case is managed via the mode buttons in the UI instead.
+		public static bool IsCapLockOn { get { return false; } }
 
 		public string TypeEntryText { get { return typeSpaceText.ToString(); } }
 
@@ -879,7 +879,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			return true;
 		}
 
-		[RequireComponent(typeof(global::UnityEngine.Rect), typeof(global::UnityEngine.UI.Image))]
+		[RequireComponent(typeof(global::UnityEngine.RectTransform), typeof(global::UnityEngine.UI.Image))]
 		public partial class NameEntryCursor : MonoBehaviour, IGameObject {
 			public int @cursorPos;
 			private int cursortype;

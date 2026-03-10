@@ -210,7 +210,7 @@ namespace PokemonUnity.Interface.UnityEngine
 			for (int i = 1; i < 4; i++)
 			{
 				//if (value[i] && value[i] != null)
-				if (value.Length <= i && value[i] != null)
+				if (value.Length > i && value[i] != null)
 					commands.Add(value[i]);
 			}
 			if (@window != null) @window.commands = commands.ToArray();
